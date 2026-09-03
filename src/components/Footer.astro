@@ -1,0 +1,70 @@
+---
+import { NAV_LINKS, SITE, whatsappUrl } from "../lib/site";
+import SocialLinks from "./SocialLinks.astro";
+
+const anio = new Date().getFullYear();
+---
+
+<footer class="bg-primary text-primary-foreground">
+  <div class="mx-auto max-w-6xl px-6 py-14">
+    <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="lg:col-span-2">
+        <p class="font-serif text-xl">
+          Vallarta <span class="text-accent">Mágico</span>
+        </p>
+        <p class="mt-3 max-w-sm text-sm text-primary-foreground/80">
+          Tours y excursiones en Puerto Vallarta y Bahía de Banderas: islas
+          Marietas, Yelapa, Majahuitas, avistamiento de ballenas y más.
+        </p>
+
+        <div class="mt-5">
+          <SocialLinks />
+        </div>
+      </div>
+
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-primary-foreground/60">
+          Explorar
+        </p>
+        <ul class="mt-4 space-y-2.5">
+          {
+            NAV_LINKS.map((link) => (
+              <li>
+                <a href={link.href} class="text-sm text-primary-foreground/90 hover:text-accent">
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-primary-foreground/60">
+          Contacto
+        </p>
+        <ul class="mt-4 space-y-2.5 text-sm text-primary-foreground/90">
+          <li>
+            <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" class="hover:text-accent">
+              WhatsApp
+            </a>
+          </li>
+          <li>
+            <a href={`mailto:${SITE.email}`} class="hover:text-accent">
+              {SITE.email}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-col gap-4 border-t border-primary-foreground/15 pt-6 text-xs text-primary-foreground/60 sm:flex-row sm:items-center sm:justify-between">
+      <p>&copy; {anio} {SITE.nombre}. Todos los derechos reservados.</p>
+      <div class="flex gap-5">
+        <a href="/aviso-de-privacidad" class="hover:text-accent">Aviso de privacidad</a>
+        <a href="/terminos-y-condiciones" class="hover:text-accent">Términos y condiciones</a>
+        <a href="/politicas-de-cancelacion" class="hover:text-accent">Políticas de cancelación</a>
+      </div>
+    </div>
+  </div>
+</footer>

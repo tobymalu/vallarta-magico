@@ -1,0 +1,96 @@
+---
+export interface Props {
+  precios: {
+    etiqueta: string;
+    precio: number;
+    moneda: "MXN" | "USD";
+    nota?: string;
+    tipo: "estandar" | "addon";
+  }[];
+  notaPrecio?: string;
+  // Amenidades/diferenciadores del tour (ej. "🔬 Bióloga a bordo"),
+  // renderizados justo debajo de las tarjetas de precio para anclar el
+  // valor antes de que el usuario siga haciendo scroll.
+  highlights?: string[];
+  ctaHref: string;
+  ctaLabel: string;
+  // Enlace a /politicas-de-cancelacion — mismo criterio que en TourHero.
+  garantiaHref?: string;
+}
+
+const { precios, notaPrecio, highlights = [], ctaHref, ctaLabel, garantiaHref } = Astro.props;
+---
+
+<section class="px-6 py-14" id="precios">
+  <div class="mx-auto max-w-3xl text-center">
+    <h2 class="font-serif text-3xl text-foreground">Precios</h2>
+    <p class="mt-2 text-sm text-muted">Sin sorpresas: esto es exactamente lo que pagas.</p>
+
+    <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      {
+        precios.map((nivel) => (
+          <div
+            class={
+              nivel.tipo === "addon"
+                ? "rounded-2xl border-2 border-dashed border-accent/50 bg-accent/5 p-6"
+                : "rounded-2xl border border-foreground/10 bg-white p-6"
+            }
+          >
+            {nivel.tipo === "addon" && (
+              <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-accent">
+                Pase alternativo
+              </p>
+            )}
+            <p class="text-sm font-semibold uppercase tracking-wide text-muted">
+              {nivel.etiqueta}
+            </p>
+            <p class="mt-2 font-serif text-3xl text-primary">
+              ${nivel.precio.toLocaleString("es-MX")}
+              <span class="text-base font-sans text-muted"> {nivel.moneda}</span>
+            </p>
+            {nivel.nota && <p class="mt-2 text-xs text-muted">{nivel.nota}</p>}
+          </div>
+        ))
+      }
+    </div>
+
+    {
+      highlights.length > 0 && (
+        <ul class="mx-auto mt-6 flex max-w-xl flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-medium text-foreground">
+          {highlights.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    {
+      notaPrecio && (
+        <p class="mx-auto mt-6 max-w-xl rounded-xl bg-accent/10 px-4 py-3 text-sm text-foreground">
+          {notaPrecio}
+        </p>
+      )
+    }
+
+    <a
+      href={ctaHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-ga-event="click_reservar"
+      class="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground transition hover:bg-primary/90"
+    >
+      {ctaLabel}
+    </a>
+
+    {
+      garantiaHref && (
+        <p class="mt-4 text-sm text-muted">
+          ✅ Reserva sin riesgo:{" "}
+          <a href={garantiaHref} class="underline underline-offset-2 hover:text-accent">
+            cancelación gratuita hasta 24 horas antes
+          </a>
+        </p>
+      )
+    }
+  </div>
+</section>

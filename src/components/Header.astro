@@ -1,0 +1,101 @@
+---
+import { Image } from "astro:assets";
+import { NAV_LINKS, SITE, whatsappUrl } from "../lib/site";
+import logo from "../assets/logo.png";
+
+export interface Props {
+  idioma?: "es" | "en";
+}
+
+const { idioma = "es" } = Astro.props;
+const inicio = idioma === "en" ? "/en/" : "/";
+---
+
+<header class="sticky top-0 z-50 border-b border-foreground/10 bg-background/95 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <a href={inicio} class="flex items-center gap-2.5 font-serif text-xl text-primary">
+      <Image src={logo} alt="" role="presentation" width={40} height={40} class="h-10 w-10 rounded-full" />
+      Vallarta <span class="text-accent">Mágico</span>
+    </a>
+
+    <nav class="hidden items-center gap-8 lg:flex" aria-label="Navegación principal">
+      {
+        NAV_LINKS.map((link) => (
+          <a
+            href={link.href}
+            class="text-sm font-medium text-foreground transition hover:text-primary"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="hidden lg:block">
+      <a
+        href={whatsappUrl()}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition hover:bg-accent/90"
+      >
+        Reservar por WhatsApp
+      </a>
+    </div>
+
+    <button
+      id="menu-toggle"
+      type="button"
+      class="flex items-center justify-center rounded-md p-2 text-foreground lg:hidden"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+      aria-controls="menu-movil"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+
+  <nav
+    id="menu-movil"
+    class="hidden flex-col gap-1 border-t border-foreground/10 bg-background px-6 py-4 lg:hidden"
+    aria-label="Navegación móvil"
+  >
+    {
+      NAV_LINKS.map((link) => (
+        <a
+          href={link.href}
+          class="rounded-md px-2 py-2.5 text-sm font-medium text-foreground hover:bg-primary/5"
+        >
+          {link.label}
+        </a>
+      ))
+    }
+    <a
+      href={whatsappUrl()}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground"
+    >
+      Reservar por WhatsApp
+    </a>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById("menu-toggle");
+  const menu = document.getElementById("menu-movil");
+
+  toggle?.addEventListener("click", () => {
+    const abierto = menu?.classList.toggle("hidden") === false;
+    toggle.setAttribute("aria-expanded", String(abierto));
+    menu?.classList.toggle("flex", abierto);
+  });
+</script>

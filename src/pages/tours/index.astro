@@ -1,0 +1,57 @@
+---
+// Listado completo de tours. Antes NAV_LINKS ya apuntaba a /tours pero la
+// página no existía (404) — solo vivía la ruta dinámica /tours/[slug].
+// Esta página también le da destino real al CTA "Ver Tours Más Vendidos"
+// de /nosotros.
+import { getCollection, type CollectionEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import TourCard from "../../components/TourCard.astro";
+
+const seo = {
+  meta_title: "Tours y Excursiones en Puerto Vallarta | Vallarta Mágico",
+  meta_description:
+    "Todos nuestros tours en Puerto Vallarta y Bahía de Banderas: Islas Marietas, Yelapa y Majahuitas, ATV y RZR, Canopy Los Veranos, avistamiento de ballenas y más.",
+};
+
+const todosLosTours = await getCollection("tours");
+
+// Mismo criterio de orden que FeaturedGrid: destacados primero por
+// orden_destacado, el resto después.
+const tours: CollectionEntry<"tours">[] = [...todosLosTours].sort((a, b) => {
+  const ordenA = a.data.destacado ? (a.data.orden_destacado ?? 999) : 1000 + (a.data.orden_destacado ?? 999);
+  const ordenB = b.data.destacado ? (b.data.orden_destacado ?? 999) : 1000 + (b.data.orden_destacado ?? 999);
+  return ordenA - ordenB;
+});
+---
+
+<Layout seo={seo} idioma="es">
+  <Header idioma="es" />
+
+  <section class="bg-primary px-6 py-16 text-center text-primary-foreground sm:py-20">
+    <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">Experiencias</p>
+    <h1 class="mt-3 font-serif text-4xl leading-tight sm:text-5xl">Todos nuestros tours</h1>
+    <p class="mx-auto mt-4 max-w-xl text-primary-foreground/80">
+      Islas, selva, ríos y ballenas: elige tu próxima aventura en Puerto Vallarta y Bahía de Banderas.
+    </p>
+  </section>
+
+  <section class="px-6 py-16">
+    <div class="mx-auto max-w-6xl">
+      {
+        tours.length === 0 ? (
+          <p class="text-muted">Todavía no hay tours cargados en esta colección.</p>
+        ) : (
+          <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {tours.map((tour) => (
+              <TourCard tour={tour} />
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <Footer />
+</Layout>

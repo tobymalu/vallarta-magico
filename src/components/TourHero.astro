@@ -1,0 +1,80 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+
+export interface Props {
+  h1: string;
+  subtitulo: string;
+  badges: string[];
+  imagen: ImageMetadata;
+  ctaHref: string;
+  ctaLabel: string;
+  // Aviso visible cuando el tour tiene una temporada real y estamos fuera
+  // de ella (ej. "Fuera de temporada. Este tour opera de Diciembre a
+  // Marzo."). Ausente en tours sin restricción de temporada.
+  avisoTemporada?: string;
+  // Enlace a /politicas-de-cancelacion. Presente = mostrar el sello de
+  // confianza "Cancelación gratuita hasta 24h antes" debajo del CTA.
+  // Se omite cuando el tour está fuera de temporada (no aplica reservar
+  // todavía, así que la garantía de cancelación no viene al caso).
+  garantiaHref?: string;
+}
+
+const { h1, subtitulo, badges, imagen, ctaHref, ctaLabel, avisoTemporada, garantiaHref } = Astro.props;
+---
+
+<section class="relative isolate overflow-hidden">
+  <Image
+    src={imagen}
+    alt=""
+    role="presentation"
+    width={1600}
+    height={900}
+    class="absolute inset-0 -z-10 h-full w-full object-cover"
+  />
+  <div class="absolute inset-0 -z-10 bg-gradient-to-t from-primary via-primary/80 to-primary/40" />
+
+  <div class="mx-auto max-w-4xl px-6 py-24 text-center text-primary-foreground sm:py-32">
+    <h1 class="font-serif text-4xl leading-tight sm:text-5xl">{h1}</h1>
+    <p class="mx-auto mt-4 max-w-2xl text-primary-foreground/85">{subtitulo}</p>
+
+    {
+      badges.length > 0 && (
+        <ul class="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-medium">
+          {badges.map((badge) => (
+            <li>{badge}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    {
+      avisoTemporada && (
+        <p class="mx-auto mt-6 max-w-md rounded-full bg-accent px-5 py-2 text-sm font-semibold text-accent-foreground">
+          {avisoTemporada}
+        </p>
+      )
+    }
+
+    <a
+      href={ctaHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-ga-event="click_whatsapp"
+      class="mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-8 py-3.5 text-base font-semibold text-accent-foreground transition hover:bg-accent/90"
+    >
+      {ctaLabel}
+    </a>
+
+    {
+      garantiaHref && (
+        <p class="mt-4 text-sm text-primary-foreground/85">
+          ✅ Reserva sin riesgo:{" "}
+          <a href={garantiaHref} class="underline underline-offset-2 hover:text-accent">
+            cancelación gratuita hasta 24 horas antes
+          </a>
+        </p>
+      )
+    }
+  </div>
+</section>

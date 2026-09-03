@@ -1,0 +1,44 @@
+---
+export interface Props {
+  incluye: string[];
+  noIncluye: string[];
+}
+
+const { incluye, noIncluye } = Astro.props;
+---
+
+<section class="px-6 py-14">
+  <div class="mx-auto grid max-w-4xl grid-cols-1 gap-10 sm:grid-cols-2">
+    <div>
+      <h2 class="font-serif text-2xl text-foreground">Qué incluye</h2>
+      <ul class="mt-5 space-y-3">
+        {
+          incluye.map((item) => (
+            <li class="flex items-start gap-3 text-sm text-foreground">
+              <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                ✓
+              </span>
+              <span>{item}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="font-serif text-2xl text-foreground">No incluye</h2>
+      <ul class="mt-5 space-y-3">
+        {
+          noIncluye.map((item) => (
+            <li class="flex items-start gap-3 text-sm text-muted">
+              <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-foreground/5 text-muted">
+                ✕
+              </span>
+              <span>{item}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,90 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+import { estaEnTemporada } from "../lib/temporada";
+import { TIPO_CAMBIO_USD_MXN } from "../lib/site";
+
+export interface Props {
+  tour: CollectionEntry<"tours">;
+  // Sin routing i18n activo todavía: mientras solo exista /es en la raíz,
+  // el prefijo de idioma no cambia la ruta. Cuando activemos /en/ el
+  // caller pasa basePath="/en/tours".
+  basePath?: string;
+}
+
+const { tour, basePath = "/tours" } = Astro.props;
+
+// La tarjeta muestra "desde $X" con el precio más bajo entre los niveles
+// (ej. el de infantes), no un precio fijo — el tour ya no tiene un solo precio.
+// Los "addon" (ej. pase de acompañante) quedan fuera de este cálculo: no
+// son el producto principal y anunciarlos como "desde" confundiría al
+// usuario sobre qué está comprando.
+const preciosPrincipales = tour.data.precios.filter((p) => p.tipo !== "addon");
+const precioMasBajo = (
+  preciosPrincipales.length > 0 ? preciosPrincipales : tour.data.precios
+).reduce((min, p) => (p.precio < min.precio ? p : min));
+
+// En la tarjeta preferimos mostrar el precio de "Adultos" directo (lo que
+// el usuario espera ver) en vez de "Desde $X" — pero no todos los tours
+// tienen un nivel llamado así (ej. ATV/RZR cotiza por vehículo, no por
+// persona), así que si no existe caemos de vuelta al "desde" de siempre.
+// Canopy cotiza en USD: aquí lo convertimos a MXN para que el listado
+// completo se lea en una sola moneda (el precio oficial en USD sigue
+// intacto en la página del tour).
+const precioAdultos = preciosPrincipales.find((p) => /^adultos/i.test(p.etiqueta));
+const precioLabel = precioAdultos
+  ? `Adultos: $${(precioAdultos.moneda === "USD"
+      ? precioAdultos.precio * TIPO_CAMBIO_USD_MXN
+      : precioAdultos.precio
+    ).toLocaleString("es-MX")} MXN`
+  : `Desde $${precioMasBajo.precio.toLocaleString("es-MX")} ${precioMasBajo.moneda}`;
+
+const enTemporada = estaEnTemporada(tour.data.temporada);
+---
+
+<a
+  href={`${basePath}/${tour.id}`}
+  class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-foreground/5 transition hover:shadow-md"
+>
+  <div class="relative aspect-4/3 overflow-hidden">
+    <Image
+      src={tour.data.imagen_portada}
+      alt={tour.data.nombre}
+      width={480}
+      height={360}
+      class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+    />
+    {
+      !enTemporada && tour.data.temporada && (
+        <span class="absolute left-3 top-3 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
+          Fuera de temporada
+        </span>
+      )
+    }
+  </div>
+  <div class="flex flex-1 flex-col gap-2 p-5">
+    <p class="text-xs font-semibold uppercase tracking-wide text-muted">
+      {tour.data.ubicacion} · {tour.data.duracion}
+    </p>
+    <h3 class="font-serif text-xl text-foreground">{tour.data.nombre}</h3>
+    <p class="mt-1 line-clamp-2 text-sm text-muted">
+      {tour.data.descripcion_corta}
+    </p>
+    <div class="mt-auto flex items-center justify-between pt-4">
+      <span class="font-serif text-lg text-primary">
+        {precioLabel}
+      </span>
+      <span class="text-sm font-semibold text-accent group-hover:underline">
+        {enTemporada || !tour.data.temporada ? "Ver tour →" : "Ver detalles →"}
+      </span>
+    </div>
+    {
+      (enTemporada || !tour.data.temporada) && (
+        // Texto plano, sin <a>: toda la tarjeta ya es un enlace y el HTML
+        // no permite anidar <a> dentro de <a>. El detalle completo (con
+        // enlace a /politicas-de-cancelacion) vive en la página del tour.
+        <p class="text-xs text-muted">✅ Cancelación gratuita hasta 24h antes</p>
+      )
+    }
+  </div>
+</a>

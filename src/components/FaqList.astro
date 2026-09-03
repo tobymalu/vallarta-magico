@@ -1,0 +1,29 @@
+---
+// Acordeón sin JavaScript: <details>/<summary> nativos son accesibles
+// por teclado y funcionan con lectores de pantalla sin trabajo extra.
+export interface Props {
+  items: { pregunta: string; respuesta: string }[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="px-6 py-14">
+  <div class="mx-auto max-w-2xl">
+    <h2 class="font-serif text-2xl text-foreground">Preguntas frecuentes</h2>
+
+    <div class="mt-6 divide-y divide-foreground/10 border-t border-b border-foreground/10">
+      {
+        items.map((item) => (
+          <details class="group py-4">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-foreground marker:content-none">
+              {item.pregunta}
+              <span class="shrink-0 text-muted transition group-open:rotate-45">+</span>
+            </summary>
+            <p class="mt-3 text-sm text-muted">{item.respuesta}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,255 @@
+---
+import { getCollection } from "astro:content";
+import { getImage } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import TourHero from "../../components/TourHero.astro";
+import PriceTable from "../../components/PriceTable.astro";
+import IncludeExclude from "../../components/IncludeExclude.astro";
+import Timeline from "../../components/Timeline.astro";
+import FaqList from "../../components/FaqList.astro";
+import StickyBookBar from "../../components/StickyBookBar.astro";
+import TourCard from "../../components/TourCard.astro";
+import TestimonialGrid from "../../components/TestimonialGrid.astro";
+import Gallery from "../../components/Gallery.astro";
+import { whatsappUrl, SITE } from "../../lib/site";
+import { estaEnTemporada } from "../../lib/temporada";
+
+export async function getStaticPaths() {
+  const tours = await getCollection("tours");
+  return tours.map((tour) => ({
+    params: { slug: tour.id },
+    props: { tour, todos: tours },
+  }));
+}
+
+const { tour, todos } = Astro.props;
+const t = tour.data;
+
+// OG image real: se genera a partir de la portada del tour (via el
+// pipeline de astro:assets), no de un archivo estático hardcodeado —
+// cuando se reemplace el placeholder por la foto real, esto se actualiza
+// solo, sin tocar el frontmatter.
+const ogImage = await getImage({ src: t.imagen_portada, width: 1200, height: 630 });
+
+const seo = {
+  meta_title: t.seo.meta_title,
+  meta_description: t.seo.meta_description,
+  canonical: t.seo.canonical,
+  og_image: t.seo.og_image ?? ogImage.src,
+  noindex: t.seo.noindex,
+};
+
+// Mismo criterio que TourCard: los "addon" no cuentan para el "Desde $X".
+const preciosPrincipales = t.precios.filter((p) => p.tipo !== "addon");
+const precioMasBajo = (
+  preciosPrincipales.length > 0 ? preciosPrincipales : t.precios
+).reduce((min, p) => (p.precio < min.precio ? p : min));
+// Fuera de temporada (tours con "temporada" real, ej. ballenas): el CTA
+// pasa de "reservar" a "lista de espera" y el mensaje de WhatsApp se
+// ajusta, en vez de dejar que el usuario intente reservar una fecha que
+// el tour no ofrece.
+const enTemporada = estaEnTemporada(t.temporada);
+const ctaLabelReserva = enTemporada ? "Ver Disponibilidad y Reservar" : "Unirme a Lista de Espera";
+const ctaLabelPrecio = enTemporada ? "Quiero mi lugar" : "Anotarme en lista de espera";
+const ctaLabelSticky = enTemporada ? "Reservar" : "Lista de espera";
+const avisoTemporada =
+  !enTemporada && t.temporada ? `Fuera de temporada. Este tour opera de ${t.temporada.descripcion}.` : undefined;
+const ctaWhatsapp = whatsappUrl(
+  enTemporada
+    ? `Hola, quiero reservar el tour "${t.nombre}".`
+    : `Hola, quiero anotarme en la lista de espera del tour "${t.nombre}" para la próxima temporada (${t.temporada?.descripcion}).`,
+);
+
+// Sello de confianza "cancelación gratuita hasta 24h antes", enlazado a
+// /politicas-de-cancelacion. Solo tiene sentido cuando sí se puede
+// reservar ahora mismo (fuera de temporada el CTA es lista de espera,
+// no una reserva con política de cancelación aplicable todavía).
+const garantiaHref = enTemporada ? "/politicas-de-cancelacion" : undefined;
+
+// Tours relacionados: por ahora "todos los demás" — cuando haya más
+// volumen conviene filtrar por ubicación/cluster en vez de "todos menos yo".
+const relacionados = todos.filter((otro) => otro.id !== tour.id).slice(0, 3);
+
+const breadcrumbs = [
+  { name: "Inicio", url: `${SITE.url}/` },
+  { name: "Tours", url: `${SITE.url}/tours` },
+  { name: t.nombre, url: `${SITE.url}/tours/${tour.id}` },
+];
+
+const jsonLdBreadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: breadcrumbs.map((b, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: b.name,
+    item: b.url,
+  })),
+};
+
+const jsonLdProduct = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: t.nombre,
+  description: t.descripcion_corta,
+  image: new URL(ogImage.src, SITE.url).toString(),
+  brand: { "@type": "Brand", name: "Vallarta Mágico" },
+  offers: t.precios.map((p) => ({
+    "@type": "Offer",
+    name: p.etiqueta,
+    price: p.precio,
+    priceCurrency: p.moneda,
+    availability: "https://schema.org/InStock",
+    url: `${SITE.url}/tours/${tour.id}`,
+  })),
+};
+
+// Entidad geográfica/atractivo del tour — viene del frontmatter (campo
+// opcional "atraccion"), no hardcodeado, porque cada tour gira en torno
+// a un lugar distinto (Islas Marietas, Río Cuale, etc.).
+const jsonLdAttraction = t.atraccion
+  ? {
+      "@context": "https://schema.org",
+      "@type": "TouristAttraction",
+      name: t.atraccion.nombre,
+      description: t.atraccion.descripcion,
+      address: {
+        "@type": "PostalAddress",
+        ...(t.atraccion.region ? { addressRegion: t.atraccion.region } : {}),
+        addressCountry: "MX",
+      },
+    }
+  : null;
+
+const jsonLdFaq =
+  t.faq.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: t.faq.map((f) => ({
+          "@type": "Question",
+          name: f.pregunta,
+          acceptedAnswer: { "@type": "Answer", text: f.respuesta },
+        })),
+      }
+    : null;
+---
+
+<Layout seo={seo} idioma="es">
+  <Header idioma="es" />
+
+  <nav aria-label="Breadcrumb" class="mx-auto max-w-6xl px-6 pt-4 text-xs text-muted">
+    <ol class="flex flex-wrap items-center gap-1">
+      {
+        breadcrumbs.map((b, i) => (
+          <li class="flex items-center gap-1">
+            {i > 0 && <span aria-hidden="true">/</span>}
+            {i === breadcrumbs.length - 1 ? (
+              <span class="text-foreground">{b.name}</span>
+            ) : (
+              <a href={b.url.replace(SITE.url, "")} class="hover:text-primary">
+                {b.name}
+              </a>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+
+  <TourHero
+    h1={t.h1}
+    subtitulo={t.subtitulo}
+    badges={t.badges}
+    imagen={t.imagen_portada}
+    ctaHref={ctaWhatsapp}
+    ctaLabel={ctaLabelReserva}
+    avisoTemporada={avisoTemporada}
+    garantiaHref={garantiaHref}
+  />
+
+  <section class="px-6 py-12">
+    <div class="mx-auto max-w-2xl">
+      <h2 class="font-serif text-2xl text-foreground">¿Qué te espera en este tour?</h2>
+      <p class="mt-3 text-foreground/90">{t.tldr}</p>
+    </div>
+  </section>
+
+  <PriceTable
+    precios={t.precios}
+    notaPrecio={t.nota_precio}
+    highlights={t.highlights}
+    ctaHref={ctaWhatsapp}
+    ctaLabel={ctaLabelPrecio}
+    garantiaHref={garantiaHref}
+  />
+
+  {t.featuredReview && <TestimonialGrid reviews={[t.featuredReview]} />}
+
+  <IncludeExclude incluye={t.incluye} noIncluye={t.no_incluye} />
+
+  <Timeline items={t.itinerario} />
+
+  {
+    (t.que_traer.length > 0 || t.restricciones.length > 0) && (
+      <section class="px-6 py-14">
+        <div class="mx-auto grid max-w-4xl grid-cols-1 gap-10 sm:grid-cols-2">
+          {t.que_traer.length > 0 && (
+            <div>
+              <h2 class="font-serif text-2xl text-foreground">Qué necesitas traer</h2>
+              <ul class="mt-5 space-y-2 text-sm text-foreground">
+                {t.que_traer.map((item) => <li>• {item}</li>)}
+              </ul>
+            </div>
+          )}
+          {t.restricciones.length > 0 && (
+            <div>
+              <h2 class="font-serif text-2xl text-foreground">
+                Por tu seguridad, no pueden realizar el tour
+              </h2>
+              <ul class="mt-5 space-y-2 text-sm text-muted">
+                {t.restricciones.map((item) => <li>• {item}</li>)}
+              </ul>
+            </div>
+          )}
+        </div>
+      </section>
+    )
+  }
+
+  <Gallery fotos={t.galeria} />
+
+  {t.faq.length > 0 && <FaqList items={t.faq} />}
+
+  {
+    relacionados.length > 0 && (
+      <section class="px-6 py-14">
+        <div class="mx-auto max-w-6xl">
+          <h2 class="font-serif text-2xl text-foreground">
+            Otros tours que te pueden interesar
+          </h2>
+          <div class="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {relacionados.map((otro) => (
+              <TourCard tour={otro} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <Footer />
+
+  <StickyBookBar
+    precioLabel={`Desde $${precioMasBajo.precio.toLocaleString("es-MX")} ${precioMasBajo.moneda}`}
+    ctaHref={ctaWhatsapp}
+    ctaLabel={ctaLabelSticky}
+  />
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdProduct)} />
+  {jsonLdAttraction && <script type="application/ld+json" set:html={JSON.stringify(jsonLdAttraction)} />}
+  {jsonLdFaq && <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />}
+</Layout>

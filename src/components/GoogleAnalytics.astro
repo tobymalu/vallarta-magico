@@ -1,0 +1,27 @@
+---
+// Google Analytics (GA4). El Measurement ID viene de una variable de
+// entorno PÚBLICA (el prefijo PUBLIC_ es la única forma que Astro expone
+// una env var al cliente) — así no queda hardcodeado en el repo, y cada
+// entorno (dev/staging/producción) puede traer el suyo o ninguno.
+//
+// Si PUBLIC_GA_TRACKING_ID no está definida (ej. en dev local sin .env),
+// el componente no inyecta nada — evita mandar tráfico de desarrollo a
+// Analytics y evita requests rotos a gtag/js?id=undefined.
+const gaTrackingId = import.meta.env.PUBLIC_GA_TRACKING_ID;
+---
+
+{
+  gaTrackingId && (
+    <>
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`} />
+      <script define:vars={{ gaTrackingId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
+        gtag("config", gaTrackingId);
+      </script>
+    </>
+  )
+}

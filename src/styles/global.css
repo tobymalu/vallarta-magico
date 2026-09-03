@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  /* Paleta de marca (capa literal — no usar directamente en componentes,
+     ver alias semánticos abajo) */
+  --color-teal: #0b4f4a;
+  --color-coral: #ff7a5c;
+  --color-arena: #f7f3ec;
+  --color-tinta: #1a2e2c;
+  --color-secundario: #5b6b69;
+
+  /* Alias semánticos por rol — esto es lo que se usa en los componentes
+     (bg-primary, text-accent, etc.). Cambiar el color de marca es
+     editar una línea aquí, no buscar/reemplazar clases por todo el sitio. */
+  --color-primary: var(--color-teal);
+  --color-primary-foreground: var(--color-arena); /* texto sobre fondo primary */
+  --color-accent: var(--color-coral); /* CTAs, énfasis */
+  --color-accent-foreground: var(--color-arena); /* texto sobre fondo accent */
+  --color-background: var(--color-arena); /* fondo general de página */
+  --color-foreground: var(--color-tinta); /* texto principal */
+  --color-muted: var(--color-secundario); /* texto secundario */
+
+  /* Tipografía */
+  --font-serif: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+}

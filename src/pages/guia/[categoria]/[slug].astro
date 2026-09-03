@@ -1,0 +1,90 @@
+---
+import { getCollection, getEntry, render } from "astro:content";
+import { getImage } from "astro:assets";
+import ActivityLayout from "../../../layouts/ActivityLayout.astro";
+import TourCard from "../../../components/TourCard.astro";
+import Gallery from "../../../components/Gallery.astro";
+import { CATEGORIA_INFO } from "../../../lib/guia";
+import { SITE } from "../../../lib/site";
+
+export async function getStaticPaths() {
+  const guia = await getCollection("guia");
+  return guia.map((entry) => ({
+    params: { categoria: entry.data.categoria, slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const a = entry.data;
+const info = CATEGORIA_INFO[a.categoria];
+const { Content } = await render(entry);
+
+const ogImage = a.imagen_portada
+  ? await getImage({ src: a.imagen_portada, width: 1200, height: 630 })
+  : undefined;
+
+const seo = {
+  meta_title: a.seo.meta_title,
+  meta_description: a.seo.meta_description,
+  canonical: a.seo.canonical,
+  og_image: a.seo.og_image ?? ogImage?.src,
+  noindex: a.seo.noindex,
+};
+
+const breadcrumbs = [
+  { name: "Guía", url: "/guia" },
+  { name: info.label, url: `/guia/${a.categoria}` },
+  { name: a.titulo, url: `/guia/${a.categoria}/${entry.id}` },
+];
+
+// Tours relacionados al final del artículo: slugs simples (no reference()),
+// así que se resuelven uno por uno y se descartan los que no existan.
+const tourEntries = await Promise.all(a.tours_relacionados.map((slug) => getEntry("tours", slug)));
+const toursRelacionados = tourEntries.filter((t) => t !== undefined);
+
+const jsonLdBreadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: breadcrumbs.map((b, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: b.name,
+    item: new URL(b.url, SITE.url).toString(),
+  })),
+};
+---
+
+<ActivityLayout
+  seo={seo}
+  h1={a.h1}
+  categoriaLabel={info.label}
+  imagenPortada={a.imagen_portada}
+  datosRapidos={a.datos_rapidos}
+  breadcrumbs={breadcrumbs}
+>
+  <Content />
+
+  <Fragment slot="despues-del-articulo">
+    <Gallery fotos={a.galeria} />
+  </Fragment>
+
+  {
+    toursRelacionados.length > 0 && (
+      <Fragment slot="despues-del-articulo">
+        <section class="px-6 pb-16">
+          <div class="mx-auto max-w-5xl">
+            <h2 class="font-serif text-2xl text-foreground">Tours relacionados</h2>
+            <div class="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {toursRelacionados.map((tour) => (
+                <TourCard tour={tour} />
+              ))}
+            </div>
+          </div>
+        </section>
+      </Fragment>
+    )
+  }
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} slot="despues-del-articulo" />
+</ActivityLayout>

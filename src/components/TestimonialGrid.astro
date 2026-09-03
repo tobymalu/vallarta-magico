@@ -1,0 +1,48 @@
+---
+// Reutilizable en Home, /nosotros (grid de varias reseñas) y en la página
+// de detalle de un tour (una sola reseña destacada, ver featuredReview
+// en content.config.ts) — con 1 sola reseña cambia a un layout "spotlight"
+// centrado en vez del grid de 3 columnas.
+export interface Props {
+  titulo?: string;
+  subtitulo?: string;
+  reviews: {
+    autor: string;
+    texto: string;
+    calificacion?: number;
+    fuente?: string;
+  }[];
+}
+
+const { titulo, subtitulo, reviews } = Astro.props;
+const esSpotlight = reviews.length === 1;
+---
+
+{
+  reviews.length > 0 && (
+    <section class="px-6 py-14">
+      <div class={esSpotlight ? "mx-auto max-w-xl text-center" : "mx-auto max-w-6xl text-center"}>
+        {titulo && <h2 class="font-serif text-3xl text-foreground">{titulo}</h2>}
+        {subtitulo && <p class="mt-2 text-sm text-muted">{subtitulo}</p>}
+
+        <div class={esSpotlight ? "mt-8" : "mt-10 grid grid-cols-1 gap-6 text-left sm:grid-cols-3"}>
+          {reviews.map((r) => (
+            <blockquote class={`rounded-2xl border border-foreground/10 bg-white p-6 ${esSpotlight ? "text-center" : ""}`}>
+              <div class={`flex gap-0.5 text-accent ${esSpotlight ? "justify-center" : ""}`} aria-hidden="true">
+                {Array.from({ length: r.calificacion ?? 5 }).map(() => (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 1.5l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.1-5.4 3.1 1.3-6-4.6-4.1 6.1-.6L10 1.5Z" />
+                  </svg>
+                ))}
+              </div>
+              <p class="mt-4 text-sm leading-relaxed text-foreground/90">"{r.texto}"</p>
+              <footer class="mt-4 text-sm font-semibold text-foreground">
+                {r.autor} <span class="font-normal text-muted">· {r.fuente ?? "Google"}</span>
+              </footer>
+            </blockquote>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

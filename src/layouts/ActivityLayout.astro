@@ -1,0 +1,108 @@
+---
+// Layout "editorial" para la colección de actividades — deliberadamente
+// distinto del layout de tours: columna de lectura angosta, tipografía
+// grande (prose-lg), sin componentes de venta duros (precios, itinerario).
+// La conversión aquí es sutil, vía CalloutTour.astro dentro del cuerpo.
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+import Layout from "./Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+export interface Props {
+  seo: {
+    meta_title: string;
+    meta_description: string;
+    canonical?: string;
+    og_image?: string;
+    noindex?: boolean;
+  };
+  h1: string;
+  // Etiqueta de la categoría (ej. "Qué Hacer"), mostrada como eyebrow
+  // sobre el H1 — antes decía fijo "Guía de actividades", ahora la guía
+  // tiene 4 categorías distintas (ver CATEGORIA_INFO en src/lib/guia.ts).
+  categoriaLabel: string;
+  imagenPortada?: ImageMetadata;
+  datosRapidos?: { etiqueta: string; valor: string }[];
+  breadcrumbs?: { name: string; url: string }[];
+}
+
+const { seo, h1, categoriaLabel, imagenPortada, datosRapidos = [], breadcrumbs = [] } = Astro.props;
+---
+
+<Layout seo={seo} idioma="es">
+  <Header idioma="es" />
+
+  {
+    breadcrumbs.length > 0 && (
+      <nav aria-label="Breadcrumb" class="mx-auto max-w-3xl px-6 pt-4 text-xs text-muted">
+        <ol class="flex flex-wrap items-center gap-1">
+          {breadcrumbs.map((b, i) => (
+            <li class="flex items-center gap-1">
+              {i > 0 && <span aria-hidden="true">/</span>}
+              {i === breadcrumbs.length - 1 ? (
+                <span class="text-foreground">{b.name}</span>
+              ) : (
+                <a href={b.url} class="hover:text-primary">
+                  {b.name}
+                </a>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )
+  }
+
+  <!-- Hero panorámico -->
+  <section class="relative isolate mt-4 overflow-hidden">
+    {
+      imagenPortada && (
+        <Image
+          src={imagenPortada}
+          alt=""
+          role="presentation"
+          width={1600}
+          height={900}
+          class="absolute inset-0 -z-10 h-full w-full object-cover"
+        />
+      )
+    }
+    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-primary via-primary/80 to-primary/40" />
+
+    <div class="mx-auto max-w-3xl px-6 py-24 text-center text-primary-foreground sm:py-32">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">{categoriaLabel}</p>
+      <h1 class="mt-3 font-serif text-4xl leading-tight sm:text-5xl">{h1}</h1>
+    </div>
+  </section>
+
+  <!-- Ficha de datos rápidos (TL;DR) -->
+  {
+    datosRapidos.length > 0 && (
+      <div class="border-b border-foreground/10 bg-white px-6 py-8">
+        <dl class="mx-auto grid max-w-3xl grid-cols-2 gap-6 sm:grid-cols-4">
+          {datosRapidos.map((dato) => (
+            <div class="text-center">
+              <dt class="text-xs font-semibold uppercase tracking-wide text-muted">{dato.etiqueta}</dt>
+              <dd class="mt-1 text-sm font-medium text-foreground">{dato.valor}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    )
+  }
+
+  <!-- Cuerpo del artículo: columna angosta, tipografía editorial -->
+  <article
+    class="prose prose-lg mx-auto max-w-3xl px-6 py-14
+      prose-headings:font-serif prose-headings:text-foreground
+      prose-h2:mt-12 prose-p:text-foreground/90 prose-li:text-foreground/90
+      prose-strong:text-foreground prose-a:text-accent prose-a:no-underline hover:prose-a:underline"
+  >
+    <slot />
+  </article>
+
+  <slot name="despues-del-articulo" />
+
+  <Footer />
+</Layout>

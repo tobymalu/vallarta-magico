@@ -1,0 +1,43 @@
+---
+// Layout para páginas legales (Términos y Condiciones, Políticas de
+// Cancelación): 100% enfocado en legibilidad, sin hero ni componentes
+// complejos. Envuelve el Layout base (head/SEO/fuentes) igual que el
+// resto del sitio, y agrega Header/Footer para que estas páginas no
+// queden "huérfanas" de la navegación del sitio.
+import Layout from "./Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+export interface Props {
+  frontmatter: {
+    title: string;
+    meta_description: string;
+  };
+}
+
+const { frontmatter } = Astro.props;
+
+const seo = {
+  meta_title: `${frontmatter.title} | Vallarta Mágico`,
+  meta_description: frontmatter.meta_description,
+  noindex: false,
+};
+---
+
+<Layout seo={seo} idioma="es">
+  <Header idioma="es" />
+
+  <main class="px-6 py-16 sm:py-20">
+    <article
+      class="prose prose-slate mx-auto max-w-3xl
+        prose-headings:font-serif prose-headings:text-foreground
+        prose-h1:text-4xl prose-h2:mt-10 prose-h2:text-2xl
+        prose-p:text-foreground/90 prose-li:text-foreground/90
+        prose-strong:text-foreground prose-a:text-accent prose-a:no-underline hover:prose-a:underline"
+    >
+      <slot />
+    </article>
+  </main>
+
+  <Footer />
+</Layout>

@@ -1,0 +1,52 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import TourCard from "./TourCard.astro";
+
+export interface Props {
+  idioma?: "es" | "en";
+}
+
+const { idioma = "es" } = Astro.props;
+
+// Sin routing i18n activo todavía: mientras solo exista /es en la raíz,
+// el prefijo de idioma no cambia la ruta. Cuando activemos /en/ esto se
+// ajusta a `idioma === "en" ? "/en/tours" : "/tours"`.
+const basePath = "/tours";
+
+const todosLosTours = await getCollection("tours");
+
+const destacados = todosLosTours
+  .filter((tour) => tour.data.destacado)
+  .sort((a, b) => (a.data.orden_destacado ?? 999) - (b.data.orden_destacado ?? 999));
+
+// Si no hay 6 destacados todavía, rellenamos con el resto de tours para
+// que el grid nunca se vea incompleto mientras cargamos contenido real.
+const relleno = todosLosTours.filter((tour) => !tour.data.destacado);
+
+const tours: CollectionEntry<"tours">[] = [...destacados, ...relleno].slice(0, 6);
+---
+
+<section class="px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-6xl">
+    <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
+      Experiencias
+    </p>
+    <h2 class="mt-2 font-serif text-3xl text-foreground sm:text-4xl">
+      Tours más buscados
+    </h2>
+
+    {
+      tours.length === 0 ? (
+        <p class="mt-8 text-muted">
+          Todavía no hay tours cargados en esta colección.
+        </p>
+      ) : (
+        <div class="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {tours.map((tour) => (
+            <TourCard tour={tour} basePath={basePath} />
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>

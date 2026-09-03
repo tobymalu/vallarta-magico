@@ -1,0 +1,180 @@
+---
+import { Image } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import TestimonialGrid from "../components/TestimonialGrid.astro";
+import { whatsappUrl } from "../lib/site";
+import { TESTIMONIOS } from "../lib/testimonios";
+import founderAvatar from "../assets/founder-avatar.jpg";
+import nosotrosHero from "../assets/nosotros-hero.jpg";
+import nosotrosHistoria from "../assets/nosotros-historia.png";
+
+const seo = {
+  meta_title: "Sobre Nosotros | Expertos Locales en Puerto Vallarta | Vallarta Mágico",
+  meta_description:
+    "Más de 10 años creando experiencias inolvidables en Puerto Vallarta y Bahía de Banderas. Somos tu agencia local de confianza. Conócenos.",
+};
+
+const ctaWhatsapp = whatsappUrl("Hola, quiero saber más sobre Vallarta Mágico y sus tours.");
+
+// Nota UI del brief: iconos minimalistas tipo Heroicons/Lucide para las 3
+// tarjetas de valores. El sitio no tiene ninguna librería de iconos como
+// dependencia — usa emoji como "icono" en todos lados (badges, highlights
+// de tours), así que seguimos esa misma convención aquí en vez de sumar
+// una dependencia nueva para 3 iconos.
+const valores = [
+  {
+    emoji: "📍",
+    titulo: "Conocimiento Local Auténtico",
+    texto:
+      "No te enviamos a ningún lugar al que no llevaríamos a nuestra propia familia. Somos expertos locales; conocemos los horarios con menos multitudes, los mejores guías y los secretos de cada destino.",
+  },
+  {
+    emoji: "🌿",
+    titulo: "Turismo Responsable y Consciente",
+    texto:
+      "Amamos nuestro hogar. Apoyamos experiencias que respetan la biodiversidad de la bahía, desde el avistamiento ético de ballenas jorobadas hasta la conservación de nuestras playas y arrecifes. Creemos en un turismo que deja una huella positiva.",
+  },
+  {
+    emoji: "🤝",
+    titulo: "Trato Humano y Sin Complicaciones",
+    texto:
+      "Tu tiempo de vacaciones es sagrado. Olvídate de los procesos burocráticos. Nuestro equipo (liderado por especialistas en atención al huésped) te acompaña desde tu primera duda en WhatsApp hasta que regresas a salvo a tu hotel.",
+  },
+];
+---
+
+<Layout seo={seo} idioma="es">
+  <Header idioma="es" />
+
+  <!-- Hero: landing de agencia moderna, no un blog. Imagen de fondo con
+       overlay + H1 grande, mismo tratamiento visual que TourHero. -->
+  <section class="relative isolate overflow-hidden">
+    <Image
+      src={nosotrosHero}
+      alt=""
+      role="presentation"
+      width={1600}
+      height={900}
+      class="absolute inset-0 -z-10 h-full w-full object-cover"
+    />
+    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-primary via-primary/85 to-primary/50" />
+
+    <div class="mx-auto max-w-4xl px-6 py-28 text-center text-primary-foreground sm:py-36">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">Sobre nosotros</p>
+      <h1 class="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
+        No vendemos tours, creamos las historias de tus vacaciones
+      </h1>
+    </div>
+  </section>
+
+  <!-- Nuestra historia: split texto/imagen -->
+  <section class="px-6 py-16 sm:py-20">
+    <div class="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">Nuestra historia</p>
+        <h2 class="mt-2 font-serif text-3xl text-foreground sm:text-4xl">Pasión por la bahía</h2>
+        <p class="mt-5 text-foreground/90">
+          Bienvenidos a Vallarta Mágico. Nacimos con una misión muy clara: mostrarle al mundo la verdadera esencia de
+          Puerto Vallarta y la Bahía de Banderas. No somos una agencia corporativa gigante e impersonal; somos una
+          empresa local en constante crecimiento, formada por un equipo de apasionados por la hospitalidad, la
+          aventura y la naturaleza de nuestra región.
+        </p>
+        <p class="mt-4 text-foreground/90">
+          Llevamos más de 10 años explorando cada rincón de este paraíso. Hemos probado cada tirolesa, buceado en
+          cada arrecife y navegado cada ruta para asegurarnos de ofrecerte solo lo mejor. Nuestro crecimiento se
+          basa en una sola métrica: la sonrisa de nuestros viajeros al final del día.
+        </p>
+      </div>
+      <div class="overflow-hidden rounded-2xl">
+        <Image
+          src={nosotrosHistoria}
+          alt="Nuestra primera oficina de Vallarta Mágico"
+          width={1200}
+          height={900}
+          class="h-full w-full object-cover"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ¿Por qué elegir Vallarta Mágico? -->
+  <section class="bg-white px-6 py-16 sm:py-20">
+    <div class="mx-auto max-w-6xl text-center">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">Nuestro ADN</p>
+      <h2 class="mt-2 font-serif text-3xl text-foreground sm:text-4xl">¿Por qué elegir Vallarta Mágico?</h2>
+
+      <div class="mt-12 grid grid-cols-1 gap-8 text-left sm:grid-cols-3">
+        {
+          valores.map((valor) => (
+            <div>
+              <div class="flex h-14 w-14 items-center justify-center rounded-full bg-accent/10 text-2xl">
+                {valor.emoji}
+              </div>
+              <h3 class="mt-5 font-serif text-xl text-foreground">{valor.titulo}</h3>
+              <p class="mt-2 text-sm text-muted">{valor.texto}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <TestimonialGrid
+    titulo="Lo que dicen nuestros viajeros"
+    subtitulo="Reseñas reales de Google, de gente que ya vivió la experiencia."
+    reviews={TESTIMONIOS}
+  />
+
+  <!-- Conoce a tu anfitrión -->
+  <section class="px-6 py-16 sm:py-20">
+    <div class="mx-auto flex max-w-3xl flex-col items-center gap-6 rounded-2xl border border-foreground/10 bg-white p-8 text-center sm:flex-row sm:items-start sm:gap-8 sm:text-left">
+      <Image
+        src={founderAvatar}
+        alt="Joaquín, fundador de Vallarta Mágico"
+        width={112}
+        height={112}
+        class="h-28 w-28 shrink-0 rounded-full object-cover"
+      />
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-accent">Conoce a tu anfitrión</p>
+        <h2 class="mt-1 font-serif text-2xl text-foreground">Joaquín</h2>
+        <p class="mt-3 text-sm text-foreground/90">
+          ¡Hola! Soy Joaquín, y junto con el equipo de Vallarta Mágico, me encargo de que tus vacaciones sean
+          perfectas. Con años de experiencia en la industria de la hospitalidad y relaciones públicas en los
+          mejores hoteles de la región, sé exactamente qué nivel de calidad y atención esperas. Mi compromiso es
+          que te lleves la mejor impresión de México y de nuestra hermosa bahía.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA de cierre -->
+  <section class="bg-primary px-6 py-16 text-center text-primary-foreground sm:py-20">
+    <h2 class="font-serif text-3xl sm:text-4xl">¿Listo para tu próxima aventura?</h2>
+    <p class="mx-auto mt-4 max-w-xl text-primary-foreground/80">
+      Ya nos conoces un poco más. Ahora queremos conocerte a ti y ayudarte a planear ese día inolvidable. Explora
+      nuestras experiencias más populares o escríbenos directamente si necesitas un plan a la medida.
+    </p>
+    <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+      <a
+        href="/tours"
+        class="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-3.5 text-base font-semibold text-accent-foreground transition hover:bg-accent/90"
+      >
+        Ver Tours Más Vendidos
+      </a>
+      <a
+        href={ctaWhatsapp}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-ga-event="click_whatsapp_nosotros"
+        class="inline-flex items-center gap-2 rounded-full border border-primary-foreground/40 px-8 py-3.5 text-base font-semibold text-primary-foreground transition hover:bg-primary-foreground/10"
+      >
+        Contactar por WhatsApp
+      </a>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
