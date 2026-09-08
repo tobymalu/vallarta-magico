@@ -39,7 +39,7 @@ export const TIPO_CAMBIO_USD_MXN = 18;
 // carga con el ID real aunque falte ese paso de configuración — pero configurar
 // PUBLIC_GTM_ID en el hosting sigue siendo lo correcto (permite usar un
 // ID distinto en preview/staging sin tocar código).
-export const GTM_ID_FALLBACK = "GTM-WZ2WZBR";
+export const GTM_ID_FALLBACK = "GTM-5GSTBTFW";
 
 export function whatsappUrl(mensaje: string = SITE.whatsapp.mensajeDefault): string {
   return `https://wa.me/${SITE.whatsapp.numero}?text=${encodeURIComponent(mensaje)}`;
