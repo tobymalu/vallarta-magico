@@ -1,0 +1,100 @@
+---
+// Banner de consentimiento de cookies, nativo (sin librería de terceros)
+// para no sumar peso/JS externo. Se conecta con el Consent Mode v2 que ya
+// arranca en "denied" por defecto desde GoogleTagManager.astro — este
+// componente solo se encarga de: mostrarse si hace falta, y según el
+// botón, actualizar ese consentimiento + avisarle a GTM.
+//
+// "Aceptar" y "Rechazar" con el mismo tamaño/prominencia (uno relleno,
+// otro con borde, pero ninguno es un link chiquito escondido) — es lo que
+// pide GDPR: que rechazar sea tan fácil como aceptar.
+---
+
+<div
+  id="cookie-banner"
+  hidden
+  class="fixed inset-x-0 bottom-0 z-50 border-t border-primary-foreground/15 bg-primary px-6 py-4 text-primary-foreground"
+>
+  <div class="mx-auto flex max-w-6xl flex-col items-center gap-4 sm:flex-row sm:justify-between">
+    <p class="text-sm text-primary-foreground/90">
+      Usamos cookies propias y de terceros para analizar tu navegación y mejorar tu experiencia.
+      <a href="/aviso-de-privacidad" class="underline underline-offset-2 hover:text-accent">Más información</a>
+    </p>
+    <div class="flex shrink-0 items-center gap-3">
+      <button
+        id="cookie-banner-rechazar"
+        type="button"
+        class="inline-flex items-center justify-center rounded-full border border-primary-foreground/40 px-6 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-foreground/10"
+      >
+        Rechazar
+      </button>
+      <button
+        id="cookie-banner-aceptar"
+        type="button"
+        class="inline-flex items-center justify-center rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-accent-foreground transition hover:bg-accent/90"
+      >
+        Aceptar
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Misma clave que GoogleTagManager.astro. Valores: "granted" | "denied".
+  const CONSENT_KEY = "cookie_consent";
+
+  const banner = document.getElementById("cookie-banner");
+  const botonAceptar = document.getElementById("cookie-banner-aceptar");
+  const botonRechazar = document.getElementById("cookie-banner-rechazar");
+
+  // En las páginas de tour, StickyBookBar también es "fixed bottom-0" en
+  // móvil (lg:hidden) — si el banner de cookies apareciera encima, taparía
+  // el botón de reservar. Si esa barra existe y está visible, subimos el
+  // banner justo arriba de ella; si no existe (el resto del sitio), o
+  // estamos en desktop (donde StickyBookBar se oculta), se queda pegado
+  // al fondo con el bottom-0 normal.
+  const stickyBookBar = document.getElementById("sticky-book-bar");
+
+  function ajustarPosicion() {
+    if (!banner) return;
+    const stickyVisible = !!stickyBookBar && stickyBookBar.offsetParent !== null;
+    banner.style.bottom = stickyVisible ? `${stickyBookBar.offsetHeight}px` : "";
+  }
+
+  // El banner arranca oculto (atributo "hidden" en el markup) para no
+  // parpadear en visitas de retorno que ya decidieron algo — solo lo
+  // mostramos si todavía no hay ninguna decisión guardada.
+  if (banner && localStorage.getItem(CONSENT_KEY) === null) {
+    ajustarPosicion();
+    banner.hidden = false;
+    window.addEventListener("resize", ajustarPosicion);
+  }
+
+  function actualizarConsentimiento(estado: "granted" | "denied") {
+    localStorage.setItem(CONSENT_KEY, estado);
+
+    window.dataLayer = window.dataLayer || [];
+    window.gtag =
+      window.gtag ||
+      function () {
+        window.dataLayer.push(arguments);
+      };
+
+    window.gtag("consent", "update", {
+      ad_storage: estado,
+      ad_user_data: estado,
+      ad_personalization: estado,
+      analytics_storage: estado,
+    });
+
+    // Evento propio en el dataLayer, por si quieres armar un trigger en
+    // GTM que dependa específicamente de la decisión del usuario (en vez
+    // de, o además de, el cambio de consent mode de arriba).
+    window.dataLayer.push({ event: estado === "granted" ? "cookie_consent_granted" : "cookie_consent_denied" });
+
+    if (banner) banner.hidden = true;
+  }
+
+  botonAceptar?.addEventListener("click", () => actualizarConsentimiento("granted"));
+  botonRechazar?.addEventListener("click", () => actualizarConsentimiento("denied"));
+</script>

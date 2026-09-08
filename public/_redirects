@@ -1,0 +1,10 @@
+# Redirects 301 para Cloudflare Pages — se resuelven en el edge, antes de
+# servir cualquier archivo estático, así que SÍ son códigos HTTP 301 reales
+# (a diferencia de la opción "redirects" de astro.config.mjs, que en un
+# sitio estático solo genera un <meta refresh>, no un 301 verdadero).
+# Formato: <origen> <destino> <código>. Sintaxis: https://developers.cloudflare.com/pages/configuration/redirects/
+/tour/islas-marietas-tour              /tours/islas-marietas-todo-incluido           301
+/tour/yelapa                           /tours/yelapa-majahuitas                      301
+/tour/razers                           /tours/atv-rzr-ruta-cuale                     301
+/tour/ballenas-avistamiento            /tours/avistamiento-ballenas                  301
+/destino/mexico/vallarta/malecon       /guia/actividades/el-malecon-puerto-vallarta  301

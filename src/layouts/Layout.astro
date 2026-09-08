@@ -1,6 +1,8 @@
 ---
 import "../styles/global.css";
-import GoogleAnalytics from "../components/GoogleAnalytics.astro";
+import GoogleTagManager from "../components/GoogleTagManager.astro";
+import GoogleTagManagerNoscript from "../components/GoogleTagManagerNoscript.astro";
+import CookieBanner from "../components/CookieBanner.astro";
 
 export interface Props {
   seo: {
@@ -33,6 +35,12 @@ const locales = { es: "es_MX", en: "en_US" };
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google Tag Manager: lo más alto posible dentro de <head>, solo
+         después de charset/viewport (esos dos van primero por spec de
+         HTML, charset debe declararse en los primeros 1024 bytes). -->
+    <GoogleTagManager />
+
     <meta name="theme-color" content="#0b4f4a" />
 
     <!-- Favicons (generados con RealFaviconGenerator, logo real de la marca) -->
@@ -72,10 +80,10 @@ const locales = { es: "es_MX", en: "en_US" };
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-
-    <GoogleAnalytics />
   </head>
   <body class="bg-background text-foreground">
+    <GoogleTagManagerNoscript />
     <slot />
+    <CookieBanner />
   </body>
 </html>

@@ -1,0 +1,21 @@
+---
+// Contraparte del <script> de GoogleTagManager.astro, para navegadores con
+// JS deshabilitado. Va inmediatamente después de abrir <body> — a
+// diferencia del script de <head>, este se resuelve en el servidor (es un
+// simple <iframe src>), no necesita define:vars.
+const gtmId = import.meta.env.PUBLIC_GTM_ID;
+---
+
+{
+  gtmId && (
+    <noscript>
+      <iframe
+        src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+        title="Google Tag Manager"
+      />
+    </noscript>
+  )
+}

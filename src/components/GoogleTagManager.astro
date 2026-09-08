@@ -1,0 +1,64 @@
+---
+// Google Tag Manager — script de <head>. Reemplaza la instalación directa
+// de gtag.js/GA4 (ver commit anterior): con GTM, Analytics (y cualquier
+// otro tag futuro — Meta Pixel, conversiones de Ads, etc.) se administran
+// desde el contenedor de GTM, sin volver a tocar código para cada uno.
+//
+// El Container ID viene de una variable de entorno PÚBLICA (el prefijo
+// PUBLIC_ es la única forma que Astro expone una env var al cliente) — así
+// no queda quemado en el repo, y cada entorno (dev/staging/producción)
+// puede traer el suyo o ninguno.
+//
+// Si PUBLIC_GTM_ID no está definida (ej. en dev local sin .env), este
+// componente no inyecta nada — evita mandar tráfico de desarrollo al
+// contenedor de producción y evita un gtm.js?id=undefined roto.
+const gtmId = import.meta.env.PUBLIC_GTM_ID;
+
+// Clave de localStorage compartida con CookieBanner.astro — si cambia
+// aquí, cambiar allá también.
+const CONSENT_KEY = "cookie_consent";
+---
+
+{
+  gtmId && (
+    <script define:vars={{ gtmId, CONSENT_KEY }}>
+      // Google Consent Mode v2: el estado por defecto se fija ANTES de que
+      // cargue el contenedor de GTM (misma etiqueta <script>, en orden), para
+      // que ningún tag dentro de GTM (GA4, Ads, etc.) guarde nada hasta que
+      // el usuario acepte en CookieBanner.astro. Si ya había aceptado antes
+      // (localStorage), arrancamos directo en "granted" — así no repetimos
+      // el banner ni perdemos tracking de más en visitas de retorno.
+      window.dataLayer = window.dataLayer || [];
+      window.gtag =
+        window.gtag ||
+        function () {
+          window.dataLayer.push(arguments);
+        };
+
+      var yaConsintio = localStorage.getItem(CONSENT_KEY) === "granted";
+      var estado = yaConsintio ? "granted" : "denied";
+
+      gtag("consent", "default", {
+        ad_storage: estado,
+        ad_user_data: estado,
+        ad_personalization: estado,
+        analytics_storage: estado,
+        // Da hasta 500ms de margen para una actualización de consentimiento
+        // antes de que los tags disparen con el valor por defecto.
+        wait_for_update: 500,
+      });
+
+      // Google Tag Manager
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", gtmId);
+    </script>
+  )
+}
