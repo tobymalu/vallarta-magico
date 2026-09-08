@@ -26,6 +26,21 @@ export const SITE = {
 // la página de detalle de cada tour). Actualízalo aquí cuando cambie.
 export const TIPO_CAMBIO_USD_MXN = 18;
 
+// Container ID de Google Tag Manager. GoogleTagManager.astro y
+// GoogleTagManagerNoscript.astro lo toman de PUBLIC_GTM_ID (variable de
+// entorno) y, si no está disponible, caen a este valor.
+//
+// Por qué existe este fallback: PUBLIC_GTM_ID vive en .env, que está en
+// .gitignore a propósito (no se sube el repo) — eso significa que un
+// entorno de build limpio (ej. Cloudflare Pages clonando desde GitHub)
+// NUNCA ve ese .env local. Si a alguien se le olvida configurar la
+// variable aparte en el dashboard del hosting, GTM desaparecía en
+// silencio (nos pasó en producción). Con este fallback, GTM siempre
+// carga con el ID real aunque falte ese paso de configuración — pero configurar
+// PUBLIC_GTM_ID en el hosting sigue siendo lo correcto (permite usar un
+// ID distinto en preview/staging sin tocar código).
+export const GTM_ID_FALLBACK = "GTM-WZ2WZBR";
+
 export function whatsappUrl(mensaje: string = SITE.whatsapp.mensajeDefault): string {
   return `https://wa.me/${SITE.whatsapp.numero}?text=${encodeURIComponent(mensaje)}`;
 }

@@ -3,19 +3,20 @@
 // JS deshabilitado. Va inmediatamente después de abrir <body> — a
 // diferencia del script de <head>, este se resuelve en el servidor (es un
 // simple <iframe src>), no necesita define:vars.
-const gtmId = import.meta.env.PUBLIC_GTM_ID;
+//
+// Mismo fallback que GoogleTagManager.astro (ver GTM_ID_FALLBACK en
+// site.ts) y por la misma razón — ambos deben coincidir siempre.
+import { GTM_ID_FALLBACK } from "../lib/site";
+
+const gtmId = import.meta.env.PUBLIC_GTM_ID || GTM_ID_FALLBACK;
 ---
 
-{
-  gtmId && (
-    <noscript>
-      <iframe
-        src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
-        height="0"
-        width="0"
-        style="display:none;visibility:hidden"
-        title="Google Tag Manager"
-      />
-    </noscript>
-  )
-}
+<noscript>
+  <iframe
+    src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+    height="0"
+    width="0"
+    style="display:none;visibility:hidden"
+    title="Google Tag Manager"
+  />
+</noscript>
