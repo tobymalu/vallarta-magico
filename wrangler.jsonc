@@ -1,0 +1,14 @@
+{
+  // Le dice explícitamente a Cloudflare que esto es un sitio 100% estático
+  // (sin Worker/SSR, sin bindings) — sirve /dist tal cual. Sin este
+  // archivo, el nuevo sistema de "Workers Builds" de Cloudflare intenta
+  // "auto-configurar" el proyecto asumiendo Astro con SSR, y agrega solo
+  // un binding de Cloudflare Images + uno de sesiones (KV) que este
+  // proyecto no usa ni tiene provisionados — eso es lo que tronaba el
+  // build. Con este archivo presente, Wrangler ya no intenta adivinar.
+  "name": "vallarta-magico",
+  "compatibility_date": "2026-09-04",
+  "assets": {
+    "directory": "./dist"
+  }
+}
