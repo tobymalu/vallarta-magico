@@ -16,7 +16,7 @@ badges:
 
 precios:
   - etiqueta: "Adultos"
-    precio: 790
+    precio: 890
     precio_regular: 1200
     moneda: "MXN"
   - etiqueta: "Menores (6 a 11 años)"
@@ -97,6 +97,6 @@ orden_destacado: 6
 
 seo:
   meta_title: "Promo: Tour Colomitos, Los Arcos y Las Ánimas | Vallarta Mágico"
-  meta_description: "🌴 ¡Super Promo! Descubre Los Arcos, Colomitos y Las Ánimas. 7 horas de snorkel, barra libre a bordo y comida en la playa. Reserva por solo $790 MXN."
+  meta_description: "🌴 ¡Super Promo! Descubre Los Arcos, Colomitos y Las Ánimas. 7 horas de snorkel, barra libre a bordo y comida en la playa. Reserva por solo $890 MXN."
   noindex: false
 ---
