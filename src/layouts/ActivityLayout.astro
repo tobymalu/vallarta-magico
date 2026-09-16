@@ -25,9 +25,26 @@ export interface Props {
   imagenPortada?: ImageMetadata;
   datosRapidos?: { etiqueta: string; valor: string }[];
   breadcrumbs?: { name: string; url: string }[];
+  // Fecha de última revisión editorial (campo fecha_actualizacion del
+  // schema de "guia") — se muestra sobre el cuerpo del artículo.
+  fechaActualizacion?: Date;
 }
 
-const { seo, h1, categoriaLabel, imagenPortada, datosRapidos = [], breadcrumbs = [] } = Astro.props;
+const { seo, h1, categoriaLabel, imagenPortada, datosRapidos = [], breadcrumbs = [], fechaActualizacion } =
+  Astro.props;
+
+// timeZone: "UTC" a propósito — z.coerce.date() en content.config.ts
+// parsea "2026-09-16" como medianoche UTC. Sin fijar la zona aquí, un
+// build/servidor en una zona horaria detrás de UTC (ej. México) mostraría
+// un día antes del que se escribió en el frontmatter.
+const fechaFormateada = fechaActualizacion
+  ? new Intl.DateTimeFormat("es-MX", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(fechaActualizacion)
+  : undefined;
 ---
 
 <Layout seo={seo} idioma="es">
@@ -99,6 +116,13 @@ const { seo, h1, categoriaLabel, imagenPortada, datosRapidos = [], breadcrumbs =
       prose-h2:mt-12 prose-p:text-foreground/90 prose-li:text-foreground/90
       prose-strong:text-foreground prose-a:text-accent prose-a:no-underline hover:prose-a:underline"
   >
+    {
+      fechaFormateada && (
+        <p class="mt-0! mb-8! text-sm text-muted not-prose">
+          Actualizado el <time datetime={fechaActualizacion?.toISOString()}>{fechaFormateada}</time>
+        </p>
+      )
+    }
     <slot />
   </article>
 

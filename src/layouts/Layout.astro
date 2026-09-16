@@ -3,6 +3,7 @@ import "../styles/global.css";
 import GoogleTagManager from "../components/GoogleTagManager.astro";
 import GoogleTagManagerNoscript from "../components/GoogleTagManagerNoscript.astro";
 import CookieBanner from "../components/CookieBanner.astro";
+import FloatingWhatsApp from "../components/FloatingWhatsApp.astro";
 
 export interface Props {
   seo: {
@@ -82,8 +83,17 @@ const locales = { es: "es_MX", en: "en_US" };
     />
   </head>
   <body class="bg-background text-foreground">
+    <!-- Salta el Header/nav (accesibilidad, WCAG 2.4.1) — el destino
+         #contenido vive en Header.astro, justo después del <header>. -->
+    <a
+      href="#contenido"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:shadow-lg"
+    >
+      Saltar al contenido
+    </a>
     <GoogleTagManagerNoscript />
     <slot />
     <CookieBanner />
+    <FloatingWhatsApp />
   </body>
 </html>

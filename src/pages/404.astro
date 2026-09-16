@@ -1,0 +1,59 @@
+---
+// 404 real (antes no existía — la ruta desconocida caía directo al
+// comportamiento default de Cloudflare Pages, sin marca ni navegación).
+// Cloudflare Pages detecta este archivo en el build (dist/404.html) y lo
+// sirve automáticamente para cualquier ruta que no exista.
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { whatsappUrl } from "../lib/site";
+
+const seo = {
+  meta_title: "Página no encontrada | Vallarta Mágico",
+  meta_description: "La página que buscas no existe o cambió de dirección.",
+  // Nunca se debe indexar una 404.
+  noindex: true,
+};
+
+const enlacesUtiles = [
+  { label: "Ver todos los tours", href: "/tours" },
+  { label: "Guía de Puerto Vallarta", href: "/guia" },
+  { label: "Contacto", href: "/contacto" },
+];
+---
+
+<Layout seo={seo} idioma="es">
+  <Header idioma="es" />
+
+  <section class="px-6 py-24 text-center sm:py-32">
+    <p class="font-serif text-7xl text-primary">404</p>
+    <h1 class="mt-4 font-serif text-3xl text-foreground sm:text-4xl">Esta página se nos perdió en el mar</h1>
+    <p class="mx-auto mt-4 max-w-md text-muted">
+      El enlace que seguiste no existe o cambió de dirección. Prueba con alguno de estos:
+    </p>
+
+    <div class="mx-auto mt-8 flex max-w-xs flex-col gap-3">
+      {
+        enlacesUtiles.map((enlace) => (
+          <a
+            href={enlace.href}
+            class="rounded-full border border-foreground/15 px-6 py-2.5 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary"
+          >
+            {enlace.label}
+          </a>
+        ))
+      }
+      <a
+        href={whatsappUrl()}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-ga-event="click_whatsapp_404"
+        class="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-accent-foreground transition hover:bg-accent/90"
+      >
+        Escribir por WhatsApp
+      </a>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>

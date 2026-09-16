@@ -174,6 +174,11 @@ const guia = defineCollection({
       h1: z.string(), // encabezado editorial (distinto de "titulo", regla 7 del blueprint SEO — mismo criterio que en tours)
       categoria: z.enum(CATEGORIAS_GUIA),
       descripcion: z.string(),
+      // Fecha de la última revisión editorial del artículo (no la de
+      // creación). Se muestra en la página ("Actualizado el...") como
+      // señal de contenido vivo para el lector y para Google (E-E-A-T) —
+      // actualízala a mano cada vez que se revise o corrija el artículo.
+      fecha_actualizacion: z.coerce.date(),
       // Ficha de datos rápidos tipo TL;DR (ej. "Longitud: 1 km"),
       // renderizada como tarjeta justo debajo del Hero. Formato
       // etiqueta/valor en vez de string libre (a diferencia de los

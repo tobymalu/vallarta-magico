@@ -89,6 +89,13 @@ const inicio = idioma === "en" ? "/en/" : "/";
   </nav>
 </header>
 
+<!-- Destino del link "Saltar al contenido" de Layout.astro — Header se
+     usa siempre como lo primero después de <body>, así que este ancla
+     (sibling, no dentro de <header>) cubre a toda página del sitio sin
+     tener que agregar un <main id="contenido"> en cada una. tabindex="-1"
+     para que el foco realmente se mueva ahí en todos los navegadores. -->
+<div id="contenido" tabindex="-1"></div>
+
 <script>
   const toggle = document.getElementById("menu-toggle");
   const menu = document.getElementById("menu-movil");
