@@ -1,0 +1,144 @@
+---
+import { Image, getImage } from "astro:assets";
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import SocialLinks from "../components/SocialLinks.astro";
+import logo from "../assets/logo.png";
+import heroImage from "../assets/home-hero.jpg";
+import { SITE, whatsappUrl } from "../lib/site";
+
+// Página estilo "linktree" para poner como único enlace en la bio de
+// Instagram/TikTok/YouTube: todos los contactos y accesos rápidos en un
+// solo lugar. noindex a propósito — es una página de utilidad para
+// redes, no contenido que deba competir en buscadores contra el Home o
+// las páginas de tours (mismo criterio que noindex en seoSchema).
+
+// OG image real (mismo patrón que index.astro) en vez de caer al
+// fallback /og-default.jpg — que hoy ni siquiera existe — para que
+// compartir este enlace sí muestre una preview en redes.
+const ogImage = await getImage({ src: heroImage, width: 1200, height: 630 });
+
+const seo = {
+  meta_title: "Enlaces | Vallarta Mágico",
+  meta_description:
+    "Todos nuestros contactos en un solo lugar: WhatsApp, teléfono, correo, Instagram, Facebook, TikTok y YouTube.",
+  og_image: ogImage.src,
+  noindex: true,
+};
+
+// Tours destacados para dar acceso directo a los más buscados. Se toman
+// de la colección (mismo criterio que FeaturedGrid.astro) en vez de
+// hardcodear slugs a mano, para que esta lista no se desactualice cuando
+// cambien los destacados del Home.
+const todosLosTours = await getCollection("tours");
+const destacados = todosLosTours
+  .filter((tour) => tour.data.destacado)
+  .sort((a, b) => (a.data.orden_destacado ?? 999) - (b.data.orden_destacado ?? 999))
+  .slice(0, 3);
+
+const ctaWhatsapp = whatsappUrl("Hola! Vengo de redes sociales y quiero información de los tours.");
+---
+
+<Layout seo={seo} idioma="es">
+  <main class="flex min-h-screen flex-col items-center bg-linear-to-b from-primary to-[#06302c] px-6 py-14">
+    <div class="w-full max-w-sm text-center">
+      <Image
+        src={logo}
+        alt={SITE.nombre}
+        width={200}
+        height={200}
+        class="mx-auto h-24 w-24 rounded-full border-4 border-primary-foreground/90 object-cover shadow-lg sm:h-28 sm:w-28"
+      />
+
+      <h1 class="mt-5 font-serif text-2xl text-primary-foreground sm:text-3xl">
+        Vallarta <span class="text-accent">Mágico</span>
+      </h1>
+      <p class="mx-auto mt-2 max-w-xs text-sm font-medium text-primary-foreground/75">
+        Tours y excursiones en Puerto Vallarta y Bahía de Banderas 🌊
+      </p>
+
+      <!-- Accesos de contacto -->
+      <div class="mt-8 flex flex-col gap-3.5">
+        <a
+          href={ctaWhatsapp}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-ga-event="click_whatsapp_bio"
+          class="flex items-center justify-center gap-2.5 rounded-full bg-accent px-6 py-4 text-base font-semibold text-accent-foreground shadow-lg shadow-black/10 transition hover:scale-[1.02] hover:bg-accent/90"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3.1.85.83-3-.2-.32A8.2 8.2 0 1 1 12 20.2Zm4.5-6.15c-.25-.12-1.45-.72-1.68-.8-.22-.08-.39-.12-.55.12-.16.25-.63.8-.78.96-.14.16-.29.18-.53.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.55-1.33-.76-1.82-.2-.48-.4-.42-.55-.42h-.47c-.16 0-.43.06-.65.31-.22.25-.86.84-.86 2.04 0 1.2.88 2.36 1 2.52.12 .16 1.74 2.66 4.22 3.72.59.25 1.05.4 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.45-.59 1.65-1.16.2-.57.2-1.06.14-1.16-.06-.11-.22-.17-.47-.29Z" />
+          </svg>
+          Escríbenos por WhatsApp
+        </a>
+
+        <a
+          href={`tel:${SITE.telefono.e164}`}
+          data-ga-event="click_llamar_bio"
+          class="flex items-center justify-center gap-2.5 rounded-full bg-primary-foreground/95 px-6 py-3.5 text-sm font-semibold text-foreground shadow-md transition hover:-translate-y-0.5 hover:bg-primary-foreground"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-primary" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6.6 10.8a15.6 15.6 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.58.57a1 1 0 0 1 1 1V20.5a1 1 0 0 1-1 1C10.6 21.5 2.5 13.4 2.5 3.5a1 1 0 0 1 1-1H7a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.58a1 1 0 0 1-.25 1.02L6.6 10.8Z" />
+          </svg>
+          Llamar: {SITE.telefono.display}
+        </a>
+
+        <a
+          href={`mailto:${SITE.email}`}
+          data-ga-event="click_correo_bio"
+          class="flex items-center justify-center gap-2.5 rounded-full border-2 border-primary-foreground/25 px-6 py-3.5 text-sm font-semibold text-primary-foreground transition hover:border-accent hover:text-accent"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.5 5.5h19v13h-19v-13Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="m3 6 9 7 9-7" />
+          </svg>
+          {SITE.email}
+        </a>
+      </div>
+
+      <!-- Redes sociales: mismo estilo de botón (ícono + nombre) que
+           WhatsApp/Llamar/Correo, justo debajo del correo. -->
+      <div class="mt-8">
+        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/55">Síguenos</p>
+        <SocialLinks
+          showLabel
+          wrapClass="mt-4 flex flex-col gap-3.5"
+          linkClass="flex items-center justify-center gap-2.5 rounded-full border-2 border-primary-foreground/25 px-6 py-3.5 text-sm font-semibold text-primary-foreground transition hover:border-accent hover:text-accent"
+          iconClass="h-5 w-5 shrink-0"
+        />
+      </div>
+
+      <!-- Accesos rápidos a tours -->
+      {
+        destacados.length > 0 && (
+          <div class="mt-9">
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/55">
+              Tours más buscados
+            </p>
+            <div class="mt-4 flex flex-col gap-3">
+              {destacados.map((tour) => (
+                <a
+                  href={`/tours/${tour.id}`}
+                  class="flex items-center justify-between gap-3 rounded-2xl bg-primary-foreground/10 px-5 py-3.5 text-left text-primary-foreground shadow-sm transition hover:bg-primary-foreground/15"
+                >
+                  <span class="text-sm font-semibold">{tour.data.nombre}</span>
+                  <span aria-hidden="true" class="text-accent">→</span>
+                </a>
+              ))}
+            </div>
+            <a
+              href="/tours"
+              class="mt-3 inline-block text-sm font-medium text-primary-foreground/75 underline underline-offset-4 hover:text-accent"
+            >
+              Ver todos los tours
+            </a>
+          </div>
+        )
+      }
+
+      <a href="/" class="mt-10 inline-block text-xs text-primary-foreground/45 transition hover:text-primary-foreground/75">
+        vallartamagico.com
+      </a>
+    </div>
+  </main>
+</Layout>

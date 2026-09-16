@@ -4,6 +4,12 @@ export const SITE = {
   nombre: "Vallarta Mágico",
   url: "https://vallartamagico.com",
   email: "info@vallartamagico.com",
+  telefono: {
+    // Mismo número que whatsapp.numero, pero formateado para mostrar en
+    // pantalla y para un href="tel:" (que necesita el "+" y sin espacios).
+    display: "+52 1 322 304 8986",
+    e164: "+5213223048986",
+  },
   whatsapp: {
     // Formato wa.me para móviles MX: 52 + 1 + 10 dígitos.
     // Si el botón da "número no válido" al probarlo, quitar el "1".
@@ -15,6 +21,7 @@ export const SITE = {
     facebook: "https://www.facebook.com/MiVallartaMagico/",
     instagram: "https://www.instagram.com/vallartamagico/",
     tiktok: "https://www.tiktok.com/@vallartamagico",
+    youtube: "https://www.youtube.com/@VallartaMagico",
   },
 } as const;
 
