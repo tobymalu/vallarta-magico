@@ -46,6 +46,12 @@ const tours = defineCollection({
         z.object({
           etiqueta: z.string(), // "Adultos", "Menores (3 a 11 años)"
           precio: z.number(),
+          // Precio "antes" para promociones (ej. tachado $1,200 → $790
+          // destacado). Opcional: solo se define en el nivel que
+          // realmente está en promoción — el % de descuento se calcula
+          // en la UI a partir de precio/precio_regular, nunca a mano,
+          // para que no queden desincronizados si cambia uno de los dos.
+          precio_regular: z.number().optional(),
           moneda: z.enum(["MXN", "USD"]).default("MXN"),
           // Texto corto opcional bajo el precio, para boletos cuyo alcance
           // no es obvio solo con la etiqueta (ej. qué incluye un "Pase de

@@ -81,6 +81,12 @@ export const PUNTOS_ENCUENTRO = [
     nota: "Salida del tour ATV y RZR: Ruta del Río Cuale.",
     mapaQuery: undefined,
   },
+  {
+    nombre: "Terminal Marítima",
+    direccion: "Terminal Marítima, Puerto Vallarta, Jalisco",
+    nota: "Salida del tour Colomitos y Las Ánimas.",
+    mapaQuery: "Terminal Marítima Puerto Vallarta",
+  },
 ] as const;
 
 // Navegación principal, compartida entre Header y Footer para que no se

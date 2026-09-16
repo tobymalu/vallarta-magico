@@ -3,6 +3,7 @@ export interface Props {
   precios: {
     etiqueta: string;
     precio: number;
+    precio_regular?: number;
     moneda: "MXN" | "USD";
     nota?: string;
     tipo: "estandar" | "addon";
@@ -41,10 +42,20 @@ const { precios, notaPrecio, highlights = [], ctaHref, ctaLabel, garantiaHref } 
                 Pase alternativo
               </p>
             )}
+            {nivel.precio_regular && (
+              <p class="mb-1 inline-block rounded-full bg-accent px-2.5 py-0.5 text-xs font-semibold text-accent-foreground">
+                🔥 Promo -{Math.round((1 - nivel.precio / nivel.precio_regular) * 100)}%
+              </p>
+            )}
             <p class="text-sm font-semibold uppercase tracking-wide text-muted">
               {nivel.etiqueta}
             </p>
-            <p class="mt-2 font-serif text-3xl text-primary">
+            {nivel.precio_regular && (
+              <p class="mt-2 text-sm text-muted line-through">
+                ${nivel.precio_regular.toLocaleString("es-MX")} {nivel.moneda}
+              </p>
+            )}
+            <p class={`font-serif text-3xl text-primary ${nivel.precio_regular ? "" : "mt-2"}`}>
               ${nivel.precio.toLocaleString("es-MX")}
               <span class="text-base font-sans text-muted"> {nivel.moneda}</span>
             </p>

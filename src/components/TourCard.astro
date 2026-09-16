@@ -32,12 +32,18 @@ const precioMasBajo = (
 // completo se lea en una sola moneda (el precio oficial en USD sigue
 // intacto en la página del tour).
 const precioAdultos = preciosPrincipales.find((p) => /^adultos/i.test(p.etiqueta));
-const precioLabel = precioAdultos
-  ? `Adultos: $${(precioAdultos.moneda === "USD"
-      ? precioAdultos.precio * TIPO_CAMBIO_USD_MXN
-      : precioAdultos.precio
-    ).toLocaleString("es-MX")} MXN`
-  : `Desde $${precioMasBajo.precio.toLocaleString("es-MX")} ${precioMasBajo.moneda}`;
+// Nivel que se muestra en la tarjeta: "Adultos" si existe, si no el más
+// bajo (ver comentario arriba). Mismo nivel para el precio nuevo y el
+// "antes" tachado, así siempre corresponden al mismo boleto.
+const nivelMostrado = precioAdultos ?? precioMasBajo;
+const convertirMxn = (valor: number) =>
+  nivelMostrado.moneda === "USD" ? valor * TIPO_CAMBIO_USD_MXN : valor;
+const precioMostrado = convertirMxn(nivelMostrado.precio);
+const precioRegularMostrado = nivelMostrado.precio_regular ? convertirMxn(nivelMostrado.precio_regular) : undefined;
+const descuentoPct = precioRegularMostrado
+  ? Math.round((1 - precioMostrado / precioRegularMostrado) * 100)
+  : undefined;
+const prefijoPrecio = precioAdultos ? "Adultos: " : "Desde ";
 
 const enTemporada = estaEnTemporada(tour.data.temporada);
 ---
@@ -61,6 +67,13 @@ const enTemporada = estaEnTemporada(tour.data.temporada);
         </span>
       )
     }
+    {
+      descuentoPct !== undefined && (
+        <span class="absolute right-3 top-3 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
+          🔥 Promo -{descuentoPct}%
+        </span>
+      )
+    }
   </div>
   <div class="flex flex-1 flex-col gap-2 p-5">
     <p class="text-xs font-semibold uppercase tracking-wide text-muted">
@@ -72,7 +85,13 @@ const enTemporada = estaEnTemporada(tour.data.temporada);
     </p>
     <div class="mt-auto flex items-center justify-between pt-4">
       <span class="font-serif text-lg text-primary">
-        {precioLabel}
+        {prefijoPrecio}
+        {precioRegularMostrado && (
+          <span class="mr-1 font-sans text-sm text-muted line-through">
+            ${precioRegularMostrado.toLocaleString("es-MX")}
+          </span>
+        )}
+        ${precioMostrado.toLocaleString("es-MX")} MXN
       </span>
       <span class="text-sm font-semibold text-accent group-hover:underline">
         {enTemporada || !tour.data.temporada ? "Ver tour →" : "Ver detalles →"}
