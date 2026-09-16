@@ -54,11 +54,20 @@ const enTemporada = estaEnTemporada(t.temporada);
 const ctaLabelReserva = enTemporada ? "Ver Disponibilidad y Reservar" : "Unirme a Lista de Espera";
 const ctaLabelPrecio = enTemporada ? "Quiero mi lugar" : "Anotarme en lista de espera";
 const ctaLabelSticky = enTemporada ? "Reservar" : "Lista de espera";
+// Mismo nivel que usan TourCard/PriceTable para el badge "Promo -X%"
+// ("Adultos" si existe, si no el más bajo) — si ya trae precio_regular,
+// el tour ya está en promo real y no tiene sentido prometer ENCIMA un
+// 20% adicional por reservar hoy (confunde: ¿cuál de los dos descuentos
+// aplica?). Ahí el gatillo pasa a ser urgencia simple, no otro % de más.
+const nivelPromo = preciosPrincipales.find((p) => /^adultos/i.test(p.etiqueta)) ?? precioMasBajo;
+const enPromo = Boolean(nivelPromo.precio_regular);
 // Fuera de temporada no hay reserva "hoy" que ofrecer (es lista de
 // espera) — ahí sí mostramos el precio, igual que antes.
-const mensajeSticky = enTemporada
-  ? "¡Obtén un 20% reservando hoy!"
-  : `Desde $${precioMasBajo.precio.toLocaleString("es-MX")} ${precioMasBajo.moneda}`;
+const mensajeSticky = !enTemporada
+  ? `Desde $${precioMasBajo.precio.toLocaleString("es-MX")} ${precioMasBajo.moneda}`
+  : enPromo
+    ? "Reserva ya por tiempo limitado."
+    : "¡Obtén un 20% reservando hoy!";
 const avisoTemporada =
   !enTemporada && t.temporada ? `Fuera de temporada. Este tour opera de ${t.temporada.descripcion}.` : undefined;
 const ctaWhatsapp = whatsappUrl(
