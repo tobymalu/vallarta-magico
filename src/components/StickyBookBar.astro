@@ -1,18 +1,23 @@
 ---
 export interface Props {
-  precioLabel: string; // ej. "Desde $700 MXN"
+  // Mensaje corto a la izquierda de la barra. En temporada usamos una
+  // llamada de urgencia ("¡Obtén un 20% reservando hoy!") en vez del
+  // precio — convierte mejor en mobile. Fuera de temporada (lista de
+  // espera) no hay reserva "hoy" que ofrecer, así que el caller pasa el
+  // precio como antes.
+  mensaje: string;
   ctaHref: string;
   ctaLabel: string;
 }
 
-const { precioLabel, ctaHref, ctaLabel } = Astro.props;
+const { mensaje, ctaHref, ctaLabel } = Astro.props;
 ---
 
 <div
   id="sticky-book-bar"
   class="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-foreground/10 bg-white/95 px-5 py-3 backdrop-blur lg:hidden"
 >
-  <span class="font-serif text-lg text-primary">{precioLabel}</span>
+  <span class="font-serif text-lg text-primary">{mensaje}</span>
   <a
     href={ctaHref}
     target="_blank"

@@ -1,16 +1,8 @@
 ---
-// Botón flotante de WhatsApp, visible en TODO el sitio (todas las
-// páginas, desktop incluido). Antes el único CTA de WhatsApp "siempre a
-// la vista" era el Header (desktop) y StickyBookBar (solo mobile, solo
-// páginas de tour) — el resto del sitio (Home, Guía, Nosotros...) no
-// tenía un CTA de WhatsApp persistente.
-//
-// En páginas de tour, en mobile, StickyBookBar ya cumple este rol (barra
-// completa con precio + CTA) — mostrar también este botón ahí sería un
-// WhatsApp duplicado pisándose visualmente con esa barra. Por eso el
-// script se oculta a sí mismo cuando detecta un StickyBookBar visible, y
-// se corre hacia arriba cuando el banner de cookies está visible (mismo
-// criterio de coordinación que ya usa CookieBanner con StickyBookBar).
+// Botón flotante de WhatsApp — visible en todo el sitio EXCEPTO páginas
+// de tour (ahí Layout.astro recibe mostrarWhatsappFlotante={false}: ya
+// tienen StickyBookBar en mobile y los CTAs del Hero/PriceTable en
+// desktop, así que este botón sería un WhatsApp redundante encima).
 import { whatsappUrl } from "../lib/site";
 ---
 
@@ -31,19 +23,13 @@ import { whatsappUrl } from "../lib/site";
 
 <script>
   const boton = document.getElementById("whatsapp-flotante");
-  const stickyBookBar = document.getElementById("sticky-book-bar");
   const cookieBanner = document.getElementById("cookie-banner");
 
+  // El banner de cookies es "fixed bottom-0" igual que este botón — si
+  // está visible, subimos el botón para que no quede tapado por/dentro
+  // del banner.
   function ajustar() {
     if (!boton) return;
-
-    const stickyVisible = !!stickyBookBar && stickyBookBar.offsetParent !== null;
-    if (stickyVisible) {
-      boton.style.display = "none";
-      return;
-    }
-    boton.style.display = "flex";
-
     const cookieVisible = !!cookieBanner && cookieBanner.offsetParent !== null;
     boton.style.bottom = cookieVisible ? `${cookieBanner.offsetHeight + 16}px` : "";
   }
@@ -51,9 +37,9 @@ import { whatsappUrl } from "../lib/site";
   ajustar();
   window.addEventListener("resize", ajustar);
 
-  // El banner de cookies se oculta con el atributo "hidden" al aceptar/
-  // rechazar (ver CookieBanner.astro) — observamos ese cambio para volver
-  // a bajar el botón sin depender de que CookieBanner nos avise.
+  // El banner se oculta con el atributo "hidden" al aceptar/rechazar (ver
+  // CookieBanner.astro) — observamos ese cambio para bajar el botón de
+  // vuelta sin depender de que CookieBanner nos avise.
   if (cookieBanner) {
     new MutationObserver(ajustar).observe(cookieBanner, { attributes: true, attributeFilter: ["hidden"] });
   }

@@ -14,9 +14,13 @@ export interface Props {
     noindex?: boolean;
   };
   idioma?: "es" | "en";
+  // false en páginas de tour: ahí StickyBookBar (mobile) y los CTAs del
+  // Hero/PriceTable (desktop) ya cubren la conversión — el botón flotante
+  // ahí era un WhatsApp redundante encima de esos CTAs.
+  mostrarWhatsappFlotante?: boolean;
 }
 
-const { seo, idioma = "es" } = Astro.props;
+const { seo, idioma = "es", mostrarWhatsappFlotante = true } = Astro.props;
 
 const siteUrl = "https://vallartamagico.com";
 const canonical = seo.canonical ?? new URL(Astro.url.pathname, siteUrl).toString();
@@ -94,6 +98,6 @@ const locales = { es: "es_MX", en: "en_US" };
     <GoogleTagManagerNoscript />
     <slot />
     <CookieBanner />
-    <FloatingWhatsApp />
+    {mostrarWhatsappFlotante && <FloatingWhatsApp />}
   </body>
 </html>
