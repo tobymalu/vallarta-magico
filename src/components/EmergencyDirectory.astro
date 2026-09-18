@@ -1,0 +1,120 @@
+---
+// Directorio de teléfonos de emergencia, para inyectar en el cuerpo del
+// artículo /guia/info-util/telefonos-emergencia-puerto-vallarta (import +
+// <EmergencyDirectory /> en el .mdx, mismo patrón que CalloutTour.astro).
+// Datos fijos aquí (no en site.ts) porque son específicos de este
+// artículo — no son datos de contacto de la marca — así que si un
+// número cambia, se edita en un solo lugar sin tocar el .mdx.
+//
+// Todos los <a> son tel: para poder marcar con un toque desde el
+// celular: es la razón de ser de esta página (alguien en apuros no
+// tiene tiempo de copiar/pegar un número).
+interface Contacto {
+  nombre: string;
+  numero: string; // formato legible en pantalla
+  tel: string; // valor de href="tel:..." (+52 y sin espacios)
+  nota?: string;
+}
+
+interface Grupo {
+  titulo: string;
+  icono: string;
+  contactos: Contacto[];
+}
+
+const GRUPOS: Grupo[] = [
+  {
+    titulo: "Autoridades y emergencias",
+    icono: "🚨",
+    contactos: [
+      { nombre: "Policía Municipal (Puerto Vallarta)", numero: "322 290 0507", tel: "+523222900507" },
+      { nombre: "Policía Turística", numero: "322 222 0123", tel: "+523222220123" },
+      { nombre: "Bomberos y Protección Civil", numero: "322 223 9476", tel: "+523222239476" },
+      { nombre: "Cruz Roja Mexicana (Base Vallarta)", numero: "322 222 1533", tel: "+523222221533" },
+      { nombre: "Ángeles Verdes", numero: "078", tel: "078", nota: "Asistencia gratuita en carretera" },
+    ],
+  },
+  {
+    titulo: "Hospitales privados 24/7",
+    icono: "🏥",
+    contactos: [
+      { nombre: "Hospital Joya", numero: "322 226 1010", tel: "+523222261010", nota: "Zona Hotelera (antes San Javier)" },
+      { nombre: "Hospital Joya", numero: "322 226 8181", tel: "+523222268181", nota: "Marina Vallarta" },
+      { nombre: "Hospital CMQ Premiere", numero: "322 226 6500", tel: "+523222266500", nota: "Centro / Zona Romántica" },
+      { nombre: "Hospiten", numero: "322 226 2081", tel: "+523222262081", nota: "Cerca de Puerto Mágico" },
+      { nombre: "Hospital Vallarta Medical Center", numero: "322 178 3000", tel: "+523221783000" },
+    ],
+  },
+  {
+    titulo: "Asistencia consular",
+    icono: "🛂",
+    contactos: [
+      {
+        nombre: "Consulado de Estados Unidos",
+        numero: "33 3268 2145",
+        tel: "+523332682145",
+        nota: "Agencia Consular en Nuevo Vallarta",
+      },
+      {
+        nombre: "Consulado de Canadá",
+        numero: "322 293 0098",
+        tel: "+523222930098",
+        nota: "Agencia Consular en Puerto Vallarta",
+      },
+    ],
+  },
+  {
+    titulo: "Servicios públicos y reportes",
+    icono: "💡",
+    contactos: [
+      { nombre: "CFE", numero: "071", tel: "071", nota: "Fallas de luz" },
+      { nombre: "SEAPAL", numero: "322 226 9191", tel: "+523222269191", nota: "Agua y alcantarillado" },
+      { nombre: "Profeco", numero: "800 468 8722", tel: "+528004688722", nota: "Protección al consumidor turístico" },
+    ],
+  },
+];
+---
+
+<div class="not-prose my-10">
+  <!-- 911: destacado por su cuenta, no solo dentro de la lista -->
+  <a
+    href="tel:911"
+    data-ga-event="click_tel_911"
+    class="flex flex-col items-center gap-1 rounded-3xl bg-accent px-6 py-8 text-center text-accent-foreground shadow-lg shadow-accent/25 transition hover:scale-[1.01] hover:bg-accent/90"
+  >
+    <span class="text-xs font-semibold uppercase tracking-[0.2em]">Emergencia — toca para llamar</span>
+    <span class="font-serif text-6xl leading-none sm:text-7xl">911</span>
+    <span class="text-sm font-medium text-accent-foreground/90">Policía, ambulancia y bomberos · línea bilingüe</span>
+  </a>
+
+  <div class="mt-10 flex flex-col gap-9">
+    {
+      GRUPOS.map((grupo) => (
+        <div>
+          <h3 class="flex items-center gap-2 font-serif text-xl text-foreground">
+            <span aria-hidden="true">{grupo.icono}</span> {grupo.titulo}
+          </h3>
+          <div class="mt-4 flex flex-col gap-2.5">
+            {grupo.contactos.map((c) => (
+              <a
+                href={`tel:${c.tel}`}
+                class="flex items-center justify-between gap-4 rounded-2xl border border-foreground/10 bg-white px-5 py-3.5 shadow-sm transition hover:border-primary/40 hover:shadow-md"
+              >
+                <span class="min-w-0">
+                  <span class="block text-sm font-semibold text-foreground">{c.nombre}</span>
+                  {c.nota && <span class="block text-xs text-muted">{c.nota}</span>}
+                </span>
+                <span class="flex shrink-0 items-center gap-2 font-semibold text-primary">
+                  {c.numero}
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6.6 10.8a15.6 15.6 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.58.57a1 1 0 0 1 1 1V20.5a1 1 0 0 1-1 1C10.6 21.5 2.5 13.4 2.5 3.5a1 1 0 0 1 1-1H7a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.58a1 1 0 0 1-.25 1.02L6.6 10.8Z" />
+                  </svg>
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</div>
