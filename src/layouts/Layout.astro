@@ -58,7 +58,11 @@ const locales = { es: "es_MX", en: "en_US" };
     <title>{seo.meta_title}</title>
     <meta name="description" content={seo.meta_description} />
     <link rel="canonical" href={canonical} />
-    {seo.noindex && <meta name="robots" content="noindex, nofollow" />}
+    <!-- Explícito siempre (no solo cuando noindex): index/follow por
+         ausencia de etiqueta ya es el default de los buscadores, pero
+         varias herramientas de auditoría SEO marcan como hallazgo que
+         la etiqueta robots no esté presente en el HTML. -->
+    <meta name="robots" content={seo.noindex ? "noindex, nofollow" : "index, follow"} />
 
     <link rel="alternate" hreflang="es" href={canonical} />
     <link rel="alternate" hreflang="x-default" href={canonical} />
