@@ -15,7 +15,8 @@ const seo = {
     "La guía de Vallarta Mágico: qué hacer, dónde comer, información útil y tips de hospedaje en Puerto Vallarta y Bahía de Banderas.",
 };
 
-const todaLaGuia = await getCollection("guia");
+// Filtra las entradas "-en" — no deben contar en el archivo en español.
+const todaLaGuia = (await getCollection("guia")).filter((a) => !a.id.endsWith("-en"));
 
 const categorias = CATEGORIAS_GUIA.map((slug) => ({
   slug,
@@ -24,8 +25,8 @@ const categorias = CATEGORIAS_GUIA.map((slug) => ({
 }));
 ---
 
-<Layout seo={seo} idioma="es">
-  <Header idioma="es" />
+<Layout seo={seo} idioma="es" urlAlterna="/en/guide/">
+  <Header idioma="es" urlAlterna="/en/guide/" />
 
   <section class="bg-primary px-6 py-16 text-center text-primary-foreground sm:py-20">
     <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">Guía del destino</p>

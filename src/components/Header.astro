@@ -1,14 +1,47 @@
 ---
 import { Image } from "astro:assets";
-import { NAV_LINKS, SITE, whatsappUrl } from "../lib/site";
+import { NAV_LINKS, NAV_LINKS_EN, whatsappUrl } from "../lib/site";
 import logo from "../assets/logo.png";
 
 export interface Props {
   idioma?: "es" | "en";
+  // URL de la contraparte real de ESTA página en el otro idioma (mismo
+  // valor que ya se le pasa a Layout/ActivityLayout como "urlAlterna") —
+  // si se pasa, el selector de idioma manda ahí en vez de al Home. Se
+  // omite en páginas que todavía no tienen traducción.
+  urlAlterna?: string;
 }
 
-const { idioma = "es" } = Astro.props;
-const inicio = idioma === "en" ? "/en/" : "/";
+const { idioma = "es", urlAlterna } = Astro.props;
+const esEn = idioma === "en";
+const inicio = esEn ? "/en/" : "/";
+const links = esEn ? NAV_LINKS_EN : NAV_LINKS;
+
+// Selector de idioma: si la página actual declara su contraparte real
+// (urlAlterna), el switcher manda ahí — así te quedas en el mismo tour o
+// artículo, solo que en el otro idioma. Si no la declara (contenido que
+// aún no se tradujo), cae de vuelta al Home del otro idioma.
+const switchHref = urlAlterna ?? (esEn ? "/" : "/en/");
+const switchLabel = esEn ? "ES" : "EN";
+const switchAriaLabel = esEn ? "Cambiar a español" : "Switch to English";
+
+const ctaLabel = esEn ? "Book via WhatsApp" : "Reservar por WhatsApp";
+const ctaMensaje = esEn
+  ? "Hi! I'd like information about tours in Puerto Vallarta and Banderas Bay."
+  : undefined; // undefined = usa SITE.whatsapp.mensajeDefault (ya en español)
+const ctaWhatsapp = whatsappUrl(ctaMensaje);
+
+const t = esEn
+  ? {
+      navPrincipal: "Main navigation",
+      navMovil: "Mobile navigation",
+      abrirMenu: "Open menu",
+    }
+  : {
+      navPrincipal: "Navegación principal",
+      navMovil: "Navegación móvil",
+      abrirMenu: "Abrir menú",
+    };
 ---
 
 <header class="sticky top-0 z-50 border-b border-foreground/10 bg-background/95 backdrop-blur">
@@ -18,9 +51,9 @@ const inicio = idioma === "en" ? "/en/" : "/";
       Vallarta <span class="text-accent">Mágico</span>
     </a>
 
-    <nav class="hidden items-center gap-8 lg:flex" aria-label="Navegación principal">
+    <nav class="hidden items-center gap-8 lg:flex" aria-label={t.navPrincipal}>
       {
-        NAV_LINKS.map((link) => (
+        links.map((link) => (
           <a
             href={link.href}
             class="text-sm font-medium text-foreground transition hover:text-primary"
@@ -31,14 +64,21 @@ const inicio = idioma === "en" ? "/en/" : "/";
       }
     </nav>
 
-    <div class="hidden lg:block">
+    <div class="hidden items-center gap-4 lg:flex">
       <a
-        href={whatsappUrl()}
+        href={switchHref}
+        aria-label={switchAriaLabel}
+        class="text-sm font-semibold text-muted transition hover:text-primary"
+      >
+        {switchLabel}
+      </a>
+      <a
+        href={ctaWhatsapp}
         target="_blank"
         rel="noopener noreferrer"
         class="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition hover:bg-accent/90"
       >
-        Reservar por WhatsApp
+        {ctaLabel}
       </a>
     </div>
 
@@ -46,7 +86,7 @@ const inicio = idioma === "en" ? "/en/" : "/";
       id="menu-toggle"
       type="button"
       class="flex items-center justify-center rounded-md p-2 text-foreground lg:hidden"
-      aria-label="Abrir menú"
+      aria-label={t.abrirMenu}
       aria-expanded="false"
       aria-controls="menu-movil"
     >
@@ -66,10 +106,10 @@ const inicio = idioma === "en" ? "/en/" : "/";
   <nav
     id="menu-movil"
     class="hidden flex-col gap-1 border-t border-foreground/10 bg-background px-6 py-4 lg:hidden"
-    aria-label="Navegación móvil"
+    aria-label={t.navMovil}
   >
     {
-      NAV_LINKS.map((link) => (
+      links.map((link) => (
         <a
           href={link.href}
           class="rounded-md px-2 py-2.5 text-sm font-medium text-foreground hover:bg-primary/5"
@@ -78,13 +118,16 @@ const inicio = idioma === "en" ? "/en/" : "/";
         </a>
       ))
     }
+    <a href={switchHref} aria-label={switchAriaLabel} class="rounded-md px-2 py-2.5 text-sm font-medium text-muted hover:bg-primary/5">
+      {switchLabel === "EN" ? "English" : "Español"}
+    </a>
     <a
-      href={whatsappUrl()}
+      href={ctaWhatsapp}
       target="_blank"
       rel="noopener noreferrer"
       class="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground"
     >
-      Reservar por WhatsApp
+      {ctaLabel}
     </a>
   </nav>
 </header>

@@ -1,0 +1,169 @@
+---
+// Versión en inglés de /nosotros.
+import { Image } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import TestimonialGrid from "../../components/TestimonialGrid.astro";
+import { whatsappUrl } from "../../lib/site";
+import { TESTIMONIOS } from "../../lib/testimonios";
+import founderAvatar from "../../assets/founder-avatar.jpg";
+import nosotrosHero from "../../assets/nosotros-hero.jpg";
+import nosotrosHistoria from "../../assets/nosotros-historia.png";
+
+const seo = {
+  meta_title: "About Us | Local Experts in Puerto Vallarta | Vallarta Mágico",
+  meta_description:
+    "More than 10 years creating unforgettable experiences in Puerto Vallarta and Banderas Bay. We're your trusted local agency. Get to know us.",
+};
+
+const ctaWhatsapp = whatsappUrl("Hi, I'd like to know more about Vallarta Mágico and its tours.");
+
+const valores = [
+  {
+    emoji: "📍",
+    titulo: "Genuine Local Knowledge",
+    texto:
+      "We won't send you anywhere we wouldn't take our own family. We're local experts — we know the hours with fewer crowds, the best guides, and every destination's secrets.",
+  },
+  {
+    emoji: "🌿",
+    titulo: "Responsible, Mindful Tourism",
+    texto:
+      "We love our home. We support experiences that respect the bay's biodiversity, from ethical humpback whale watching to preserving our beaches and reefs. We believe in tourism that leaves a positive mark.",
+  },
+  {
+    emoji: "🤝",
+    titulo: "Human, Hassle-Free Service",
+    texto:
+      "Your vacation time is sacred. Forget bureaucratic back-and-forth. Our team (led by guest-care specialists) is with you from your first question on WhatsApp until you're safely back at your hotel.",
+  },
+];
+---
+
+<Layout seo={seo} idioma="en" urlAlterna="/nosotros/">
+  <Header idioma="en" urlAlterna="/nosotros/" />
+
+  <section class="relative isolate overflow-hidden">
+    <Image
+      src={nosotrosHero}
+      alt=""
+      role="presentation"
+      width={1600}
+      height={900}
+      class="absolute inset-0 -z-10 h-full w-full object-cover"
+    />
+    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-primary via-primary/85 to-primary/50" />
+
+    <div class="mx-auto max-w-4xl px-6 py-28 text-center text-primary-foreground sm:py-36">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">About us</p>
+      <h1 class="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
+        We don't sell tours, we create your vacation stories
+      </h1>
+    </div>
+  </section>
+
+  <section class="px-6 py-16 sm:py-20">
+    <div class="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">Our story</p>
+        <h2 class="mt-2 font-serif text-3xl text-foreground sm:text-4xl">A passion for the bay</h2>
+        <p class="mt-5 text-foreground/90">
+          Welcome to Vallarta Mágico. We were born with a clear mission: to show the world the true essence of
+          Puerto Vallarta and Banderas Bay. We're not a giant, impersonal corporate agency; we're a growing local
+          company made up of a team passionate about hospitality, adventure, and the nature of our region.
+        </p>
+        <p class="mt-4 text-foreground/90">
+          We've spent more than 10 years exploring every corner of this paradise. We've tried every zip-line,
+          dived every reef, and sailed every route to make sure we only offer you the best. Our growth is based
+          on a single metric: our travelers' smiles at the end of the day.
+        </p>
+      </div>
+      <div class="overflow-hidden rounded-2xl">
+        <Image
+          src={nosotrosHistoria}
+          alt="Our first Vallarta Mágico office"
+          width={1200}
+          height={900}
+          class="h-full w-full object-cover"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white px-6 py-16 sm:py-20">
+    <div class="mx-auto max-w-6xl text-center">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">Our DNA</p>
+      <h2 class="mt-2 font-serif text-3xl text-foreground sm:text-4xl">Why choose Vallarta Mágico?</h2>
+
+      <div class="mt-12 grid grid-cols-1 gap-8 text-left sm:grid-cols-3">
+        {
+          valores.map((valor) => (
+            <div>
+              <div class="flex h-14 w-14 items-center justify-center rounded-full bg-accent/10 text-2xl">
+                {valor.emoji}
+              </div>
+              <h3 class="mt-5 font-serif text-xl text-foreground">{valor.titulo}</h3>
+              <p class="mt-2 text-sm text-muted">{valor.texto}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <TestimonialGrid
+    titulo="What our travelers say"
+    subtitulo="Real Google reviews, left in their original Spanish — translation coming soon."
+    reviews={TESTIMONIOS}
+  />
+
+  <section class="px-6 py-16 sm:py-20">
+    <div class="mx-auto flex max-w-3xl flex-col items-center gap-6 rounded-2xl border border-foreground/10 bg-white p-8 text-center sm:flex-row sm:items-start sm:gap-8 sm:text-left">
+      <Image
+        src={founderAvatar}
+        alt="Joaquín, founder of Vallarta Mágico"
+        width={112}
+        height={112}
+        class="h-28 w-28 shrink-0 rounded-full object-cover"
+      />
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-accent">Meet your host</p>
+        <h2 class="mt-1 font-serif text-2xl text-foreground">Joaquín</h2>
+        <p class="mt-3 text-sm text-foreground/90">
+          Hi! I'm Joaquín, and together with the Vallarta Mágico team, I make sure your vacation is perfect. With
+          years of experience in hospitality and public relations at the region's best hotels, I know exactly
+          the level of quality and attention you expect. My commitment is for you to leave with the best
+          impression of Mexico and our beautiful bay.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-primary px-6 py-16 text-center text-primary-foreground sm:py-20">
+    <h2 class="font-serif text-3xl sm:text-4xl">Ready for your next adventure?</h2>
+    <p class="mx-auto mt-4 max-w-xl text-primary-foreground/80">
+      Now you know us a little better. Now we want to get to know you and help you plan that unforgettable day.
+      Explore our most popular experiences, or message us directly if you need a custom plan.
+    </p>
+    <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+      <a
+        href="/en/tours"
+        class="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-3.5 text-base font-semibold text-accent-foreground transition hover:bg-accent/90"
+      >
+        See Our Best-Selling Tours
+      </a>
+      <a
+        href={ctaWhatsapp}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-ga-event="click_whatsapp_nosotros"
+        class="inline-flex items-center gap-2 rounded-full border border-primary-foreground/40 px-8 py-3.5 text-base font-semibold text-primary-foreground transition hover:bg-primary-foreground/10"
+      >
+        Contact via WhatsApp
+      </a>
+    </div>
+  </section>
+
+  <Footer idioma="en" />
+</Layout>

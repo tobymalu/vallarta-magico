@@ -2,6 +2,7 @@
 layout: ../layouts/LegalLayout.astro
 title: "Políticas de Cancelación y Reembolsos"
 meta_description: "Conoce nuestras políticas de cancelación: reembolso del 100% con 24 horas de anticipación. Reservas sin riesgo en Vallarta Mágico."
+urlAlterna: "/en/cancellation-policy/"
 ---
 
 # Políticas de Cancelación y Reembolsos

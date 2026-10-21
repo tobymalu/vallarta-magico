@@ -9,6 +9,18 @@
 // Todos los <a> son tel: para poder marcar con un toque desde el
 // celular: es la razón de ser de esta página (alguien en apuros no
 // tiene tiempo de copiar/pegar un número).
+//
+// Bilingüe: GRUPOS_ES / GRUPOS_EN son dos listas separadas (no un solo
+// objeto {es, en} por campo) a propósito — es más fácil de leer y editar
+// que anidar traducciones dentro de cada contacto. OJO al tocar un
+// número: hay que actualizarlo en las dos listas para que no se
+// desincronicen.
+export interface Props {
+  idioma?: "es" | "en";
+}
+
+const { idioma = "es" } = Astro.props;
+
 interface Contacto {
   nombre: string;
   numero: string; // formato legible en pantalla
@@ -22,7 +34,7 @@ interface Grupo {
   contactos: Contacto[];
 }
 
-const GRUPOS: Grupo[] = [
+const GRUPOS_ES: Grupo[] = [
   {
     titulo: "Autoridades y emergencias",
     icono: "🚨",
@@ -73,6 +85,70 @@ const GRUPOS: Grupo[] = [
     ],
   },
 ];
+
+const GRUPOS_EN: Grupo[] = [
+  {
+    titulo: "Authorities & emergencies",
+    icono: "🚨",
+    contactos: [
+      { nombre: "Municipal Police (Puerto Vallarta)", numero: "322 290 0507", tel: "+523222900507" },
+      { nombre: "Tourist Police", numero: "322 222 0123", tel: "+523222220123" },
+      { nombre: "Fire Department & Civil Protection", numero: "322 223 9476", tel: "+523222239476" },
+      { nombre: "Mexican Red Cross (Vallarta base)", numero: "322 222 1533", tel: "+523222221533" },
+      { nombre: "Green Angels", numero: "078", tel: "078", nota: "Free roadside assistance" },
+    ],
+  },
+  {
+    titulo: "Private hospitals, 24/7",
+    icono: "🏥",
+    contactos: [
+      { nombre: "Hospital Joya", numero: "322 226 1010", tel: "+523222261010", nota: "Hotel Zone (formerly San Javier)" },
+      { nombre: "Hospital Joya", numero: "322 226 8181", tel: "+523222268181", nota: "Marina Vallarta" },
+      { nombre: "Hospital CMQ Premiere", numero: "322 226 6500", tel: "+523222266500", nota: "Downtown / Romantic Zone" },
+      { nombre: "Hospiten", numero: "322 226 2081", tel: "+523222262081", nota: "Near Puerto Mágico" },
+      { nombre: "Hospital Vallarta Medical Center", numero: "322 178 3000", tel: "+523221783000" },
+    ],
+  },
+  {
+    titulo: "Consular assistance",
+    icono: "🛂",
+    contactos: [
+      {
+        nombre: "United States Consulate",
+        numero: "33 3268 2145",
+        tel: "+523332682145",
+        nota: "Consular Agency in Nuevo Vallarta",
+      },
+      {
+        nombre: "Canadian Consulate",
+        numero: "322 293 0098",
+        tel: "+523222930098",
+        nota: "Consular Agency in Puerto Vallarta",
+      },
+    ],
+  },
+  {
+    titulo: "Public services & reports",
+    icono: "💡",
+    contactos: [
+      { nombre: "CFE", numero: "071", tel: "071", nota: "Power outages" },
+      { nombre: "SEAPAL", numero: "322 226 9191", tel: "+523222269191", nota: "Water & sewage" },
+      { nombre: "Profeco", numero: "800 468 8722", tel: "+528004688722", nota: "Tourist consumer protection" },
+    ],
+  },
+];
+
+const GRUPOS = idioma === "en" ? GRUPOS_EN : GRUPOS_ES;
+const t =
+  idioma === "en"
+    ? {
+        emergenciaLabel: "Emergency — tap to call",
+        emergenciaNota: "Police, ambulance and fire · bilingual line",
+      }
+    : {
+        emergenciaLabel: "Emergencia — toca para llamar",
+        emergenciaNota: "Policía, ambulancia y bomberos · línea bilingüe",
+      };
 ---
 
 <div class="not-prose my-10">
@@ -82,9 +158,9 @@ const GRUPOS: Grupo[] = [
     data-ga-event="click_tel_911"
     class="flex flex-col items-center gap-1 rounded-3xl bg-accent px-6 py-8 text-center text-accent-foreground shadow-lg shadow-accent/25 transition hover:scale-[1.01] hover:bg-accent/90"
   >
-    <span class="text-xs font-semibold uppercase tracking-[0.2em]">Emergencia — toca para llamar</span>
+    <span class="text-xs font-semibold uppercase tracking-[0.2em]">{t.emergenciaLabel}</span>
     <span class="font-serif text-6xl leading-none sm:text-7xl">911</span>
-    <span class="text-sm font-medium text-accent-foreground/90">Policía, ambulancia y bomberos · línea bilingüe</span>
+    <span class="text-sm font-medium text-accent-foreground/90">{t.emergenciaNota}</span>
   </a>
 
   <div class="mt-10 flex flex-col gap-9">

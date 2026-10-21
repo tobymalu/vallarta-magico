@@ -1,0 +1,67 @@
+---
+// Home en inglés — fase 1 del sitio bilingüe: infraestructura real
+// (routing /en/, Header/Footer/Nav traducidos, hreflang, selector de
+// idioma), sin traducir todavía el contenido profundo (tours, guía,
+// reseñas) — eso es la fase 2, página por página. Por eso esta página
+// SÍ reusa FeaturedGrid/TestimonialGrid (ya tienen su propio prop
+// idioma para los textos de alrededor), pero las tarjetas de tours y las
+// reseñas en sí siguen en español: son nombres propios y testimonios
+// reales de clientes, no texto de interfaz — traducirlos bien es
+// trabajo de contenido, no de infraestructura.
+import { Image, getImage } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import FeaturedGrid from "../../components/FeaturedGrid.astro";
+import TestimonialGrid from "../../components/TestimonialGrid.astro";
+import { TESTIMONIOS } from "../../lib/testimonios";
+import heroImage from "../../assets/home-hero.jpg";
+
+const ogImage = await getImage({ src: heroImage, width: 1200, height: 630 });
+
+const seo = {
+  meta_title: "Vallarta Mágico | Tours and Excursions in Puerto Vallarta",
+  meta_description:
+    "Discover the best excursions in Puerto Vallarta and Banderas Bay: Marietas Islands, Yelapa, whale watching and more.",
+  og_image: ogImage.src,
+};
+---
+
+<Layout seo={seo} idioma="en" urlAlterna="/">
+  <Header idioma="en" urlAlterna="/" />
+
+  <section class="relative isolate overflow-hidden">
+    <Image
+      src={heroImage}
+      alt="The Puerto Vallarta letters and the Seahorse statue on the Malecón"
+      width={1920}
+      height={800}
+      class="absolute inset-0 -z-10 h-full w-full object-cover"
+      priority
+    />
+    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-primary via-primary/80 to-primary/40" />
+
+    <div class="px-6 py-24 text-center text-primary-foreground sm:py-32">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
+        Welcome to
+      </p>
+      <h1 class="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
+        Vallarta Mágico
+      </h1>
+      <p class="mx-auto mt-4 max-w-xl text-primary-foreground/80">
+        Discover the best excursions in Puerto Vallarta and Banderas Bay:
+        Marietas Islands, Yelapa, whale watching and more.
+      </p>
+    </div>
+  </section>
+
+  <FeaturedGrid idioma="en" />
+
+  <TestimonialGrid
+    titulo="What our travelers say"
+    subtitulo="Real Google reviews, left in their original Spanish — translation coming soon."
+    reviews={TESTIMONIOS}
+  />
+
+  <Footer idioma="en" />
+</Layout>

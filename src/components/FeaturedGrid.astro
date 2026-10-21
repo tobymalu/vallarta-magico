@@ -7,13 +7,27 @@ export interface Props {
 }
 
 const { idioma = "es" } = Astro.props;
+const esEn = idioma === "en";
+const basePath = esEn ? "/en/tours" : "/tours";
 
-// Sin routing i18n activo todavía: mientras solo exista /es en la raíz,
-// el prefijo de idioma no cambia la ruta. Cuando activemos /en/ esto se
-// ajusta a `idioma === "en" ? "/en/tours" : "/tours"`.
-const basePath = "/tours";
+const t = esEn
+  ? {
+      eyebrow: "Experiences",
+      titulo: "Most popular tours",
+      vacio: "No tours loaded in this collection yet.",
+    }
+  : {
+      eyebrow: "Experiencias",
+      titulo: "Tours más buscados",
+      vacio: "Todavía no hay tours cargados en esta colección.",
+    };
 
-const todosLosTours = await getCollection("tours");
+// Entradas en inglés = slug con sufijo "-en" (ver content/tours/*-en/).
+// Mismo filtro de "destacados" que en español, porque cada entrada "-en"
+// replica destacado/orden_destacado de su contraparte.
+const todosLosTours = (await getCollection("tours")).filter((tour) =>
+  esEn ? tour.id.endsWith("-en") : !tour.id.endsWith("-en"),
+);
 
 const destacados = todosLosTours
   .filter((tour) => tour.data.destacado)
@@ -29,21 +43,21 @@ const tours: CollectionEntry<"tours">[] = [...destacados, ...relleno].slice(0, 6
 <section class="px-6 py-16 sm:py-20">
   <div class="mx-auto max-w-6xl">
     <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-      Experiencias
+      {t.eyebrow}
     </p>
     <h2 class="mt-2 font-serif text-3xl text-foreground sm:text-4xl">
-      Tours más buscados
+      {t.titulo}
     </h2>
 
     {
       tours.length === 0 ? (
         <p class="mt-8 text-muted">
-          Todavía no hay tours cargados en esta colección.
+          {t.vacio}
         </p>
       ) : (
         <div class="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {tours.map((tour) => (
-            <TourCard tour={tour} basePath={basePath} />
+            <TourCard tour={tour} basePath={basePath} idioma={idioma} />
           ))}
         </div>
       )

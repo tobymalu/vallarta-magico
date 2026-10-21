@@ -18,9 +18,10 @@ export interface Props {
   // Se omite cuando el tour está fuera de temporada (no aplica reservar
   // todavía, así que la garantía de cancelación no viene al caso).
   garantiaHref?: string;
+  idioma?: "es" | "en";
 }
 
-const { h1, subtitulo, badges, imagen, ctaHref, ctaLabel, avisoTemporada, garantiaHref } = Astro.props;
+const { h1, subtitulo, badges, imagen, ctaHref, ctaLabel, avisoTemporada, garantiaHref, idioma = "es" } = Astro.props;
 ---
 
 <section class="relative isolate overflow-hidden">
@@ -69,9 +70,9 @@ const { h1, subtitulo, badges, imagen, ctaHref, ctaLabel, avisoTemporada, garant
     {
       garantiaHref && (
         <p class="mt-4 text-sm text-primary-foreground/85">
-          ✅ Reserva sin riesgo:{" "}
+          {idioma === "en" ? "✅ Risk-free booking: " : "✅ Reserva sin riesgo: "}
           <a href={garantiaHref} class="underline underline-offset-2 hover:text-accent">
-            cancelación gratuita hasta 24 horas antes
+            {idioma === "en" ? "free cancellation up to 24 hours before" : "cancelación gratuita hasta 24 horas antes"}
           </a>
         </p>
       )

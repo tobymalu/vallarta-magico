@@ -4,14 +4,24 @@
 // tienen StickyBookBar en mobile y los CTAs del Hero/PriceTable en
 // desktop, así que este botón sería un WhatsApp redundante encima).
 import { whatsappUrl } from "../lib/site";
+
+export interface Props {
+  idioma?: "es" | "en";
+}
+
+const { idioma = "es" } = Astro.props;
+const esEn = idioma === "en";
+const mensaje = esEn
+  ? "Hi! I'd like information about tours in Puerto Vallarta and Banderas Bay."
+  : undefined; // undefined = usa SITE.whatsapp.mensajeDefault (ya en español)
 ---
 
 <a
   id="whatsapp-flotante"
-  href={whatsappUrl()}
+  href={whatsappUrl(mensaje)}
   target="_blank"
   rel="noopener noreferrer"
-  aria-label="Reservar por WhatsApp"
+  aria-label={esEn ? "Book via WhatsApp" : "Reservar por WhatsApp"}
   data-ga-event="click_whatsapp_flotante"
   class="fixed right-5 bottom-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105 hover:bg-[#20bd5a]"
 >

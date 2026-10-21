@@ -1,8 +1,38 @@
 ---
-import { NAV_LINKS, SITE, whatsappUrl } from "../lib/site";
+import { NAV_LINKS, NAV_LINKS_EN, SITE, whatsappUrl } from "../lib/site";
 import SocialLinks from "./SocialLinks.astro";
 
+export interface Props {
+  idioma?: "es" | "en";
+}
+
+const { idioma = "es" } = Astro.props;
+const esEn = idioma === "en";
+const links = esEn ? NAV_LINKS_EN : NAV_LINKS;
+
 const anio = new Date().getFullYear();
+
+const t = esEn
+  ? {
+      tagline: "Tours and excursions in Puerto Vallarta and Banderas Bay: Marietas Islands, Yelapa, Majahuitas, whale watching and more.",
+      explorar: "Explore",
+      contacto: "Contact",
+      derechos: "All rights reserved.",
+      // Las 3 páginas legales todavía solo existen en español (fase 2) —
+      // mejor ser honestos con "(ES)" que fingir que ya están traducidas.
+      aviso: "Privacy Notice (ES)",
+      terminos: "Terms & Conditions (ES)",
+      cancelacion: "Cancellation Policy (ES)",
+    }
+  : {
+      tagline: "Tours y excursiones en Puerto Vallarta y Bahía de Banderas: islas Marietas, Yelapa, Majahuitas, avistamiento de ballenas y más.",
+      explorar: "Explorar",
+      contacto: "Contacto",
+      derechos: "Todos los derechos reservados.",
+      aviso: "Aviso de privacidad",
+      terminos: "Términos y condiciones",
+      cancelacion: "Políticas de cancelación",
+    };
 ---
 
 <footer class="bg-primary text-primary-foreground">
@@ -13,8 +43,7 @@ const anio = new Date().getFullYear();
           Vallarta <span class="text-accent">Mágico</span>
         </p>
         <p class="mt-3 max-w-sm text-sm text-primary-foreground/80">
-          Tours y excursiones en Puerto Vallarta y Bahía de Banderas: islas
-          Marietas, Yelapa, Majahuitas, avistamiento de ballenas y más.
+          {t.tagline}
         </p>
 
         <div class="mt-5">
@@ -24,11 +53,11 @@ const anio = new Date().getFullYear();
 
       <div>
         <p class="text-sm font-semibold uppercase tracking-wide text-primary-foreground/60">
-          Explorar
+          {t.explorar}
         </p>
         <ul class="mt-4 space-y-2.5">
           {
-            NAV_LINKS.map((link) => (
+            links.map((link) => (
               <li>
                 <a href={link.href} class="text-sm text-primary-foreground/90 hover:text-accent">
                   {link.label}
@@ -41,7 +70,7 @@ const anio = new Date().getFullYear();
 
       <div>
         <p class="text-sm font-semibold uppercase tracking-wide text-primary-foreground/60">
-          Contacto
+          {t.contacto}
         </p>
         <ul class="mt-4 space-y-2.5 text-sm text-primary-foreground/90">
           <li>
@@ -59,11 +88,11 @@ const anio = new Date().getFullYear();
     </div>
 
     <div class="mt-12 flex flex-col gap-4 border-t border-primary-foreground/15 pt-6 text-xs text-primary-foreground/60 sm:flex-row sm:items-center sm:justify-between">
-      <p>&copy; {anio} {SITE.nombre}. Todos los derechos reservados.</p>
+      <p>&copy; {anio} {SITE.nombre}. {t.derechos}</p>
       <div class="flex gap-5">
-        <a href="/aviso-de-privacidad" class="hover:text-accent">Aviso de privacidad</a>
-        <a href="/terminos-y-condiciones" class="hover:text-accent">Términos y condiciones</a>
-        <a href="/politicas-de-cancelacion" class="hover:text-accent">Políticas de cancelación</a>
+        <a href="/aviso-de-privacidad" class="hover:text-accent">{t.aviso}</a>
+        <a href="/terminos-y-condiciones" class="hover:text-accent">{t.terminos}</a>
+        <a href="/politicas-de-cancelacion" class="hover:text-accent">{t.cancelacion}</a>
       </div>
     </div>
   </div>

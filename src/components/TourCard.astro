@@ -6,13 +6,36 @@ import { TIPO_CAMBIO_USD_MXN } from "../lib/site";
 
 export interface Props {
   tour: CollectionEntry<"tours">;
-  // Sin routing i18n activo todavía: mientras solo exista /es en la raíz,
-  // el prefijo de idioma no cambia la ruta. Cuando activemos /en/ el
-  // caller pasa basePath="/en/tours".
+  // ES: "/tours". EN: el caller pasa basePath="/en/tours" (ver
+  // FeaturedGrid.astro y las páginas /en/tours).
   basePath?: string;
+  idioma?: "es" | "en";
 }
 
-const { tour, basePath = "/tours" } = Astro.props;
+const { tour, basePath = "/tours", idioma = "es" } = Astro.props;
+// Las entradas en inglés viven en content/tours/{slug}-en/ — su propio
+// id trae el sufijo "-en", que hay que quitar para construir la URL real
+// (/en/tours/{slug}, sin el sufijo).
+const slugUrl = tour.id.replace(/-en$/, "");
+
+const t =
+  idioma === "en"
+    ? {
+        fueraTemporada: "Out of season",
+        verTour: "View tour →",
+        verDetalles: "View details →",
+        adultos: "Adults: ",
+        desde: "From ",
+        garantia: "✅ Free cancellation up to 24h before",
+      }
+    : {
+        fueraTemporada: "Fuera de temporada",
+        verTour: "Ver tour →",
+        verDetalles: "Ver detalles →",
+        adultos: "Adultos: ",
+        desde: "Desde ",
+        garantia: "✅ Cancelación gratuita hasta 24h antes",
+      };
 
 // La tarjeta muestra "desde $X" con el precio más bajo entre los niveles
 // (ej. el de infantes), no un precio fijo — el tour ya no tiene un solo precio.
@@ -43,18 +66,19 @@ const precioRegularMostrado = nivelMostrado.precio_regular ? convertirMxn(nivelM
 const descuentoPct = precioRegularMostrado
   ? Math.round((1 - precioMostrado / precioRegularMostrado) * 100)
   : undefined;
-const prefijoPrecio = precioAdultos ? "Adultos: " : "Desde ";
+const prefijoPrecio = precioAdultos ? t.adultos : t.desde;
+const locale = idioma === "en" ? "en-US" : "es-MX";
 
 const enTemporada = estaEnTemporada(tour.data.temporada);
 ---
 
 <a
-  href={`${basePath}/${tour.id}`}
+  href={`${basePath}/${slugUrl}`}
   class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-foreground/5 transition hover:shadow-md"
 >
   <div class="relative aspect-4/3 overflow-hidden">
     <Image
-      src={tour.data.imagen_portada}
+      src={tour.data.imagen_portada!}
       alt={tour.data.nombre}
       width={480}
       height={360}
@@ -63,7 +87,7 @@ const enTemporada = estaEnTemporada(tour.data.temporada);
     {
       !enTemporada && tour.data.temporada && (
         <span class="absolute left-3 top-3 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
-          Fuera de temporada
+          {t.fueraTemporada}
         </span>
       )
     }
@@ -88,13 +112,13 @@ const enTemporada = estaEnTemporada(tour.data.temporada);
         {prefijoPrecio}
         {precioRegularMostrado && (
           <span class="mr-1 font-sans text-sm text-muted line-through">
-            ${precioRegularMostrado.toLocaleString("es-MX")}
+            ${precioRegularMostrado.toLocaleString(locale)}
           </span>
         )}
-        ${precioMostrado.toLocaleString("es-MX")} MXN
+        ${precioMostrado.toLocaleString(locale)} MXN
       </span>
       <span class="text-sm font-semibold text-accent group-hover:underline">
-        {enTemporada || !tour.data.temporada ? "Ver tour →" : "Ver detalles →"}
+        {enTemporada || !tour.data.temporada ? t.verTour : t.verDetalles}
       </span>
     </div>
     {
@@ -102,7 +126,7 @@ const enTemporada = estaEnTemporada(tour.data.temporada);
         // Texto plano, sin <a>: toda la tarjeta ya es un enlace y el HTML
         // no permite anidar <a> dentro de <a>. El detalle completo (con
         // enlace a /politicas-de-cancelacion) vive en la página del tour.
-        <p class="text-xs text-muted">✅ Cancelación gratuita hasta 24h antes</p>
+        <p class="text-xs text-muted">{t.garantia}</p>
       )
     }
   </div>

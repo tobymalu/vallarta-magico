@@ -15,7 +15,9 @@ const seo = {
     "Todos nuestros tours en Puerto Vallarta y Bahía de Banderas: Islas Marietas, Yelapa y Majahuitas, ATV y RZR, Canopy Los Veranos, avistamiento de ballenas y más.",
 };
 
-const todosLosTours = await getCollection("tours");
+// Filtra las entradas "-en" (ver content/tours/*-en/) — tienen su propio
+// listado en /en/tours.
+const todosLosTours = (await getCollection("tours")).filter((t) => !t.id.endsWith("-en"));
 
 // Mismo criterio de orden que FeaturedGrid: destacados primero por
 // orden_destacado, el resto después.
@@ -26,8 +28,8 @@ const tours: CollectionEntry<"tours">[] = [...todosLosTours].sort((a, b) => {
 });
 ---
 
-<Layout seo={seo} idioma="es">
-  <Header idioma="es" />
+<Layout seo={seo} idioma="es" urlAlterna="/en/tours/">
+  <Header idioma="es" urlAlterna="/en/tours/" />
 
   <section class="bg-primary px-6 py-16 text-center text-primary-foreground sm:py-20">
     <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">Experiencias</p>

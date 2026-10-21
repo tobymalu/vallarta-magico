@@ -29,8 +29,9 @@ const seo = {
 // Tours destacados para dar acceso directo a los más buscados. Se toman
 // de la colección (mismo criterio que FeaturedGrid.astro) en vez de
 // hardcodear slugs a mano, para que esta lista no se desactualice cuando
-// cambien los destacados del Home.
-const todosLosTours = await getCollection("tours");
+// cambien los destacados del Home. Filtra las entradas "-en" (bio es
+// solo español, ver src/pages/bio.astro).
+const todosLosTours = (await getCollection("tours")).filter((t) => !t.id.endsWith("-en"));
 const destacados = todosLosTours
   .filter((tour) => tour.data.destacado)
   .sort((a, b) => (a.data.orden_destacado ?? 999) - (b.data.orden_destacado ?? 999))

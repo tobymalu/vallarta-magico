@@ -1,0 +1,60 @@
+---
+// Versión en inglés de /guia — misma estructura, categorías en inglés
+// (ver CATEGORIA_INFO_EN en src/lib/guia.ts). El segmento de categoría en
+// la URL se queda igual que en español (/en/guide/actividades, no
+// /en/guide/activities) — ver nota en lib/guia.ts.
+import { getCollection } from "astro:content";
+import Layout from "../../../layouts/Layout.astro";
+import Header from "../../../components/Header.astro";
+import Footer from "../../../components/Footer.astro";
+import { CATEGORIAS_GUIA } from "../../../content.config";
+import { CATEGORIA_INFO_EN } from "../../../lib/guia";
+
+const seo = {
+  meta_title: "Puerto Vallarta Guide: What to Do, Eat & Know | Vallarta Mágico",
+  meta_description:
+    "The Vallarta Mágico guide: what to do, where to eat, useful info and lodging tips in Puerto Vallarta and Banderas Bay.",
+};
+
+// Entradas en inglés = slug con sufijo "-en".
+const todaLaGuia = (await getCollection("guia")).filter((a) => a.id.endsWith("-en"));
+
+const categorias = CATEGORIAS_GUIA.map((slug) => ({
+  slug,
+  ...CATEGORIA_INFO_EN[slug],
+  cantidad: todaLaGuia.filter((a) => a.data.categoria === slug).length,
+}));
+---
+
+<Layout seo={seo} idioma="en" urlAlterna="/guia/">
+  <Header idioma="en" urlAlterna="/guia/" />
+
+  <section class="bg-primary px-6 py-16 text-center text-primary-foreground sm:py-20">
+    <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">Destination Guide</p>
+    <h1 class="mt-3 font-serif text-4xl leading-tight sm:text-5xl">All about Puerto Vallarta</h1>
+    <p class="mx-auto mt-4 max-w-xl text-primary-foreground/80">
+      What to do, where to eat, and everything practical for your trip to the bay.
+    </p>
+  </section>
+
+  <section class="px-6 py-16">
+    <div class="mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2">
+      {
+        categorias.map((cat) => (
+          <a
+            href={`/en/guide/${cat.slug}`}
+            class="group rounded-2xl border border-foreground/10 bg-white p-6 transition hover:shadow-md"
+          >
+            <h2 class="font-serif text-xl text-foreground">{cat.label}</h2>
+            <p class="mt-2 text-sm text-muted">{cat.descripcion}</p>
+            <span class="mt-4 inline-block text-sm font-semibold text-accent group-hover:underline">
+              {cat.cantidad > 0 ? `Read articles →` : "Coming soon →"}
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <Footer idioma="en" />
+</Layout>

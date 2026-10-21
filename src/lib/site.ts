@@ -102,3 +102,12 @@ export const NAV_LINKS = [
   // Para activarla, descomenta la siguiente línea (y crea /hospedaje):
   // { label: "Hospedaje", href: "/hospedaje" },
 ] as const;
+
+// Versión en inglés del nav — fase 2: tours, guía, nosotros y contacto
+// ya tienen contraparte real en /en/, así que el nav apunta ahí.
+export const NAV_LINKS_EN = [
+  { label: "Tours", href: "/en/tours" },
+  { label: "Guide", href: "/en/guide" },
+  { label: "About", href: "/en/about" },
+  { label: "Contact", href: "/en/contact" },
+] as const;

@@ -1,0 +1,102 @@
+---
+// Versión en inglés de /guia/[categoria]/[slug] — misma lógica que la
+// página en español, leyendo las entradas "-en" de "guia" (ver
+// content/guia/*-en/). tours_relacionados en el frontmatter sigue
+// listando slugs base (sin "-en"): aquí se les agrega el sufijo para
+// jalar la entrada en inglés de "tours", y TourCard ya sabe quitarlo de
+// vuelta para armar la URL (/en/tours/{slug}, ver TourCard.astro).
+import { getCollection, getEntry, render } from "astro:content";
+import { getImage } from "astro:assets";
+import ActivityLayout from "../../../../layouts/ActivityLayout.astro";
+import TourCard from "../../../../components/TourCard.astro";
+import Gallery from "../../../../components/Gallery.astro";
+import { CATEGORIA_INFO_EN } from "../../../../lib/guia";
+import { SITE } from "../../../../lib/site";
+
+export async function getStaticPaths() {
+  const guia = (await getCollection("guia")).filter((entry) => entry.id.endsWith("-en"));
+  return guia.map((entry) => ({
+    params: { categoria: entry.data.categoria, slug: entry.id.replace(/-en$/, "") },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const a = entry.data;
+const slug = entry.id.replace(/-en$/, "");
+const info = CATEGORIA_INFO_EN[a.categoria];
+const { Content } = await render(entry);
+
+const ogImage = a.imagen_portada
+  ? await getImage({ src: a.imagen_portada, width: 1200, height: 630 })
+  : undefined;
+
+const seo = {
+  meta_title: a.seo.meta_title,
+  meta_description: a.seo.meta_description,
+  canonical: a.seo.canonical,
+  og_image: a.seo.og_image ?? ogImage?.src,
+  noindex: a.seo.noindex,
+};
+
+const breadcrumbs = [
+  { name: "Guide", url: "/en/guide" },
+  { name: info.label, url: `/en/guide/${a.categoria}` },
+  { name: a.titulo, url: `/en/guide/${a.categoria}/${slug}` },
+];
+
+// Tours relacionados: slugs base + sufijo "-en" para jalar la entrada en
+// inglés; se descartan los que no existan (igual que en español).
+const tourEntries = await Promise.all(
+  a.tours_relacionados.map((baseSlug) => getEntry("tours", `${baseSlug}-en`)),
+);
+const toursRelacionados = tourEntries.filter((t) => t !== undefined);
+
+const jsonLdBreadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: breadcrumbs.map((b, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: b.name,
+    item: new URL(b.url, SITE.url).toString(),
+  })),
+};
+---
+
+<ActivityLayout
+  seo={seo}
+  h1={a.h1}
+  categoriaLabel={info.label}
+  imagenPortada={a.imagen_portada}
+  datosRapidos={a.datos_rapidos}
+  breadcrumbs={breadcrumbs}
+  fechaActualizacion={a.fecha_actualizacion}
+  idioma="en"
+  urlAlterna={`/guia/${a.categoria}/${slug}/`}
+>
+  <Content />
+
+  <Fragment slot="despues-del-articulo">
+    <Gallery fotos={a.galeria} titulo="Gallery" />
+  </Fragment>
+
+  {
+    toursRelacionados.length > 0 && (
+      <Fragment slot="despues-del-articulo">
+        <section class="px-6 pb-16">
+          <div class="mx-auto max-w-5xl">
+            <h2 class="font-serif text-2xl text-foreground">Related tours</h2>
+            <div class="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {toursRelacionados.map((tour) => (
+                <TourCard tour={tour} basePath="/en/tours" idioma="en" />
+              ))}
+            </div>
+          </div>
+        </section>
+      </Fragment>
+    )
+  }
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} slot="despues-del-articulo" />
+</ActivityLayout>

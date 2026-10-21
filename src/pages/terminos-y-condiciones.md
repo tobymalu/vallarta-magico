@@ -2,6 +2,7 @@
 layout: ../layouts/LegalLayout.astro
 title: "Términos y Condiciones de Servicio"
 meta_description: "Términos y condiciones de los servicios turísticos de Vallarta Mágico: tours, excursiones y actividades en Puerto Vallarta y Bahía de Banderas."
+urlAlterna: "/en/terms-and-conditions/"
 ---
 
 # Términos y Condiciones de Servicio

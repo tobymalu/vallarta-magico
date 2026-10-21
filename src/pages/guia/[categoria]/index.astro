@@ -19,7 +19,11 @@ export async function getStaticPaths() {
 const { categoria } = Astro.params as { categoria: (typeof CATEGORIAS_GUIA)[number] };
 const info = CATEGORIA_INFO[categoria];
 
-const articulos = (await getCollection("guia")).filter((a) => a.data.categoria === categoria);
+// Filtra las entradas "-en" — tienen su propia página de archivo en
+// /en/guide/[categoria] (ver src/pages/en/guide/[categoria]/index.astro).
+const articulos = (await getCollection("guia")).filter(
+  (a) => a.data.categoria === categoria && !a.id.endsWith("-en"),
+);
 
 const seo = {
   meta_title: `${info.label} en Puerto Vallarta | Guía de Vallarta Mágico`,
@@ -27,8 +31,8 @@ const seo = {
 };
 ---
 
-<Layout seo={seo} idioma="es">
-  <Header idioma="es" />
+<Layout seo={seo} idioma="es" urlAlterna={`/en/guide/${categoria}/`}>
+  <Header idioma="es" urlAlterna={`/en/guide/${categoria}/`} />
 
   <nav aria-label="Breadcrumb" class="mx-auto max-w-5xl px-6 pt-4 text-xs text-muted">
     <ol class="flex flex-wrap items-center gap-1">

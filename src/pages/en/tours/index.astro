@@ -1,0 +1,53 @@
+---
+// Versión en inglés de /tours — mismo criterio que la página en español,
+// filtrando solo las entradas "-en" de la colección (ver content/tours/*-en/).
+import { getCollection, type CollectionEntry } from "astro:content";
+import Layout from "../../../layouts/Layout.astro";
+import Header from "../../../components/Header.astro";
+import Footer from "../../../components/Footer.astro";
+import TourCard from "../../../components/TourCard.astro";
+
+const seo = {
+  meta_title: "Tours and Excursions in Puerto Vallarta | Vallarta Mágico",
+  meta_description:
+    "All our tours in Puerto Vallarta and Banderas Bay: Marietas Islands, Yelapa & Majahuitas, ATV & RZR, Los Veranos Canopy, whale watching and more.",
+};
+
+const todosLosTours = (await getCollection("tours")).filter((t) => t.id.endsWith("-en"));
+
+const tours: CollectionEntry<"tours">[] = [...todosLosTours].sort((a, b) => {
+  const ordenA = a.data.destacado ? (a.data.orden_destacado ?? 999) : 1000 + (a.data.orden_destacado ?? 999);
+  const ordenB = b.data.destacado ? (b.data.orden_destacado ?? 999) : 1000 + (b.data.orden_destacado ?? 999);
+  return ordenA - ordenB;
+});
+---
+
+<Layout seo={seo} idioma="en" urlAlterna="/tours/">
+  <Header idioma="en" urlAlterna="/tours/" />
+
+  <section class="bg-primary px-6 py-16 text-center text-primary-foreground sm:py-20">
+    <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">Experiences</p>
+    <h1 class="mt-3 font-serif text-4xl leading-tight sm:text-5xl">All our tours</h1>
+    <p class="mx-auto mt-4 max-w-xl text-primary-foreground/80">
+      Islands, jungle, rivers and whales: pick your next adventure in Puerto Vallarta and Banderas Bay.
+    </p>
+  </section>
+
+  <section class="px-6 py-16">
+    <div class="mx-auto max-w-6xl">
+      {
+        tours.length === 0 ? (
+          <p class="text-muted">No tours loaded in this collection yet.</p>
+        ) : (
+          <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {tours.map((tour) => (
+              <TourCard tour={tour} basePath="/en/tours" idioma="en" />
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <Footer idioma="en" />
+</Layout>

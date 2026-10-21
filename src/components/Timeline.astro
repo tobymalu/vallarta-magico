@@ -1,14 +1,15 @@
 ---
 export interface Props {
   items: { hora?: string; titulo: string; descripcion: string }[];
+  idioma?: "es" | "en";
 }
 
-const { items } = Astro.props;
+const { items, idioma = "es" } = Astro.props;
 ---
 
 <section class="px-6 py-14">
   <div class="mx-auto max-w-2xl">
-    <h2 class="font-serif text-2xl text-foreground">Itinerario del día</h2>
+    <h2 class="font-serif text-2xl text-foreground">{idioma === "en" ? "Day Itinerary" : "Itinerario del día"}</h2>
 
     <ol class="mt-8 space-y-8 border-l-2 border-primary/20 pl-6">
       {

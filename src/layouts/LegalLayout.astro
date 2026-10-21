@@ -12,10 +12,17 @@ export interface Props {
   frontmatter: {
     title: string;
     meta_description: string;
+    // "en" en el frontmatter de las versiones traducidas (ver
+    // src/pages/en/*.md) — default "es" para no tocar las 3 páginas
+    // legales existentes.
+    idioma?: "es" | "en";
+    // URL de la contraparte en el otro idioma, para el hreflang.
+    urlAlterna?: string;
   };
 }
 
 const { frontmatter } = Astro.props;
+const idioma = frontmatter.idioma ?? "es";
 
 const seo = {
   meta_title: `${frontmatter.title} | Vallarta Mágico`,
@@ -24,8 +31,8 @@ const seo = {
 };
 ---
 
-<Layout seo={seo} idioma="es">
-  <Header idioma="es" />
+<Layout seo={seo} idioma={idioma} urlAlterna={frontmatter.urlAlterna}>
+  <Header idioma={idioma} urlAlterna={frontmatter.urlAlterna} />
 
   <main class="px-6 py-16 sm:py-20">
     <article
@@ -39,5 +46,5 @@ const seo = {
     </article>
   </main>
 
-  <Footer />
+  <Footer idioma={idioma} />
 </Layout>

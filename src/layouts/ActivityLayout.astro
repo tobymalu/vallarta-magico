@@ -28,17 +28,30 @@ export interface Props {
   // Fecha de última revisión editorial (campo fecha_actualizacion del
   // schema de "guia") — se muestra sobre el cuerpo del artículo.
   fechaActualizacion?: Date;
+  idioma?: "es" | "en";
+  // URL de la contraparte real en el otro idioma, para el hreflang — ver
+  // mismo prop en Layout.astro.
+  urlAlterna?: string;
 }
 
-const { seo, h1, categoriaLabel, imagenPortada, datosRapidos = [], breadcrumbs = [], fechaActualizacion } =
-  Astro.props;
+const {
+  seo,
+  h1,
+  categoriaLabel,
+  imagenPortada,
+  datosRapidos = [],
+  breadcrumbs = [],
+  fechaActualizacion,
+  idioma = "es",
+  urlAlterna,
+} = Astro.props;
 
 // timeZone: "UTC" a propósito — z.coerce.date() en content.config.ts
 // parsea "2026-09-16" como medianoche UTC. Sin fijar la zona aquí, un
 // build/servidor en una zona horaria detrás de UTC (ej. México) mostraría
 // un día antes del que se escribió en el frontmatter.
 const fechaFormateada = fechaActualizacion
-  ? new Intl.DateTimeFormat("es-MX", {
+  ? new Intl.DateTimeFormat(idioma === "en" ? "en-US" : "es-MX", {
       day: "numeric",
       month: "long",
       year: "numeric",
@@ -47,8 +60,8 @@ const fechaFormateada = fechaActualizacion
   : undefined;
 ---
 
-<Layout seo={seo} idioma="es">
-  <Header idioma="es" />
+<Layout seo={seo} idioma={idioma} urlAlterna={urlAlterna}>
+  <Header idioma={idioma} urlAlterna={urlAlterna} />
 
   {
     breadcrumbs.length > 0 && (
@@ -132,7 +145,8 @@ const fechaFormateada = fechaActualizacion
     {
       fechaFormateada && (
         <p class="mt-0! mb-8! text-sm text-muted not-prose">
-          Actualizado el <time datetime={fechaActualizacion?.toISOString()}>{fechaFormateada}</time>
+          {idioma === "en" ? "Updated on " : "Actualizado el "}
+          <time datetime={fechaActualizacion?.toISOString()}>{fechaFormateada}</time>
         </p>
       )
     }
@@ -141,5 +155,5 @@ const fechaFormateada = fechaActualizacion
 
   <slot name="despues-del-articulo" />
 
-  <Footer />
+  <Footer idioma={idioma} />
 </Layout>

@@ -1,0 +1,88 @@
+---
+// Versión en inglés de /guia/[categoria].
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import Layout from "../../../../layouts/Layout.astro";
+import Header from "../../../../components/Header.astro";
+import Footer from "../../../../components/Footer.astro";
+import { CATEGORIAS_GUIA } from "../../../../content.config";
+import { CATEGORIA_INFO_EN } from "../../../../lib/guia";
+
+export async function getStaticPaths() {
+  return CATEGORIAS_GUIA.map((categoria) => ({ params: { categoria } }));
+}
+
+const { categoria } = Astro.params as { categoria: (typeof CATEGORIAS_GUIA)[number] };
+const info = CATEGORIA_INFO_EN[categoria];
+
+const articulos = (await getCollection("guia")).filter(
+  (a) => a.data.categoria === categoria && a.id.endsWith("-en"),
+);
+
+const seo = {
+  meta_title: `${info.label} in Puerto Vallarta | Vallarta Mágico Guide`,
+  meta_description: info.descripcion,
+};
+---
+
+<Layout seo={seo} idioma="en" urlAlterna={`/guia/${categoria}/`}>
+  <Header idioma="en" urlAlterna={`/guia/${categoria}/`} />
+
+  <nav aria-label="Breadcrumb" class="mx-auto max-w-5xl px-6 pt-4 text-xs text-muted">
+    <ol class="flex flex-wrap items-center gap-1">
+      <li><a href="/en/guide" class="hover:text-primary">Guide</a></li>
+      <li class="flex items-center gap-1">
+        <span aria-hidden="true">/</span>
+        <span class="text-foreground">{info.label}</span>
+      </li>
+    </ol>
+  </nav>
+
+  <section class="px-6 pb-8 pt-6 text-center sm:pt-10">
+    <h1 class="font-serif text-3xl text-foreground sm:text-4xl">{info.label}</h1>
+    <p class="mx-auto mt-3 max-w-xl text-sm text-muted">{info.descripcion}</p>
+  </section>
+
+  <section class="px-6 pb-16">
+    <div class="mx-auto max-w-5xl">
+      {
+        articulos.length === 0 ? (
+          <p class="text-center text-muted">No articles in this category yet — check back soon.</p>
+        ) : (
+          <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
+            {articulos.map((a) => {
+              const slug = a.id.replace(/-en$/, "");
+              return (
+                <a
+                  href={`/en/guide/${categoria}/${slug}`}
+                  class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-foreground/5 transition hover:shadow-md"
+                >
+                  {a.data.imagen_portada && (
+                    <div class="aspect-16/9 overflow-hidden">
+                      <Image
+                        src={a.data.imagen_portada}
+                        alt={a.data.titulo}
+                        width={640}
+                        height={360}
+                        class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                  )}
+                  <div class="flex flex-1 flex-col gap-2 p-5">
+                    <h2 class="font-serif text-xl text-foreground">{a.data.titulo}</h2>
+                    <p class="line-clamp-2 text-sm text-muted">{a.data.descripcion}</p>
+                    <span class="mt-auto pt-4 text-sm font-semibold text-accent group-hover:underline">
+                      Read guide →
+                    </span>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <Footer idioma="en" />
+</Layout>

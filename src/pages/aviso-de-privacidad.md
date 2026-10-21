@@ -2,6 +2,7 @@
 layout: ../layouts/LegalLayout.astro
 title: "Aviso de Privacidad"
 meta_description: "Aviso de privacidad de Vallarta Mágico: qué datos recabamos, para qué los usamos y tus derechos ARCO."
+urlAlterna: "/en/privacy-notice/"
 ---
 
 # Aviso de Privacidad

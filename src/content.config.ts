@@ -125,7 +125,11 @@ const tours = defineCollection({
       // (string con emoji incluido) para no duplicar convenciones.
       highlights: z.array(z.string()).default([]),
 
-      imagen_portada: image(),
+      // Optional (no obligatorio): las entradas en inglés (slug "-en",
+      // ver /en/tours) no declaran su propia foto — la página /en/
+      // reutiliza imagen_portada/galeria de la entrada en español con el
+      // mismo slug base, porque las fotos no son específicas de idioma.
+      imagen_portada: image().optional(),
       // Cada foto de galería lleva su propio alt: una galería de 6-8 fotos
       // no puede compartir el alt del título del tour, cada una describe
       // lo que se ve (esto también es señal para Google Imágenes).

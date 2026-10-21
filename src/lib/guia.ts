@@ -22,3 +22,27 @@ export const CATEGORIA_INFO: Record<(typeof CATEGORIAS_GUIA)[number], { label: s
     descripcion: "Zonas y recomendaciones de dónde quedarte en la bahía.",
   },
 };
+
+// Versión en inglés — mismas claves (el segmento de URL /guia/[categoria]
+// se queda en español incluso en /en/guide/[categoria]: son nombres
+// propios de la categoría a nivel de ruta, no texto de interfaz, y así
+// no hay que mantener un segundo mapa de slugs). Solo el label/descripcion
+// que ve el usuario cambian de idioma.
+export const CATEGORIA_INFO_EN: Record<(typeof CATEGORIAS_GUIA)[number], { label: string; descripcion: string }> = {
+  actividades: {
+    label: "Things to Do",
+    descripcion: "Sightseeing, viewpoints and activities in Puerto Vallarta and Banderas Bay.",
+  },
+  gastronomia: {
+    label: "Food & Dining",
+    descripcion: "Restaurants, taco routes and where to eat like a local.",
+  },
+  "info-util": {
+    label: "Useful Info",
+    descripcion: "Emergencies, transportation and practical tips for your trip.",
+  },
+  "hospedaje-tips": {
+    label: "Lodging Tips",
+    descripcion: "Areas and recommendations for where to stay in the bay.",
+  },
+};

@@ -8,7 +8,10 @@ import { CATEGORIA_INFO } from "../../../lib/guia";
 import { SITE } from "../../../lib/site";
 
 export async function getStaticPaths() {
-  const guia = await getCollection("guia");
+  // Filtra las entradas "-en" (ver content/guia/*-en/) — viven en la
+  // misma colección pero su ruta real es /en/guide/..., generada por
+  // src/pages/en/guide/[categoria]/[slug].astro.
+  const guia = (await getCollection("guia")).filter((entry) => !entry.id.endsWith("-en"));
   return guia.map((entry) => ({
     params: { categoria: entry.data.categoria, slug: entry.id },
     props: { entry },
@@ -63,6 +66,7 @@ const jsonLdBreadcrumb = {
   datosRapidos={a.datos_rapidos}
   breadcrumbs={breadcrumbs}
   fechaActualizacion={a.fecha_actualizacion}
+  urlAlterna={`/en/guide/${a.categoria}/${entry.id}/`}
 >
   <Content />
 

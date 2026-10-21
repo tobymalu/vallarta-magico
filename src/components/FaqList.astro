@@ -3,14 +3,15 @@
 // por teclado y funcionan con lectores de pantalla sin trabajo extra.
 export interface Props {
   items: { pregunta: string; respuesta: string }[];
+  idioma?: "es" | "en";
 }
 
-const { items } = Astro.props;
+const { items, idioma = "es" } = Astro.props;
 ---
 
 <section class="px-6 py-14">
   <div class="mx-auto max-w-2xl">
-    <h2 class="font-serif text-2xl text-foreground">Preguntas frecuentes</h2>
+    <h2 class="font-serif text-2xl text-foreground">{idioma === "en" ? "Frequently asked questions" : "Preguntas frecuentes"}</h2>
 
     <div class="mt-6 divide-y divide-foreground/10 border-t border-b border-foreground/10">
       {

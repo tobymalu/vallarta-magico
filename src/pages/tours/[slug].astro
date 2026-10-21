@@ -17,7 +17,9 @@ import { whatsappUrl, SITE } from "../../lib/site";
 import { estaEnTemporada } from "../../lib/temporada";
 
 export async function getStaticPaths() {
-  const tours = await getCollection("tours");
+  // Filtra las entradas "-en" (ver content/tours/*-en/) — su ruta real es
+  // /en/tours/..., generada por src/pages/en/tours/[slug].astro.
+  const tours = (await getCollection("tours")).filter((t) => !t.id.endsWith("-en"));
   return tours.map((tour) => ({
     params: { slug: tour.id },
     props: { tour, todos: tours },
@@ -27,11 +29,16 @@ export async function getStaticPaths() {
 const { tour, todos } = Astro.props;
 const t = tour.data;
 
+// imagen_portada quedó "optional" en el schema por flexibilidad a
+// futuro (ver content.config.ts) — en la práctica, todo tour (ES o "-en")
+// siempre trae la suya, así que el "!" es seguro aquí.
+const imagenPortada = t.imagen_portada!;
+
 // OG image real: se genera a partir de la portada del tour (via el
 // pipeline de astro:assets), no de un archivo estático hardcodeado —
 // cuando se reemplace el placeholder por la foto real, esto se actualiza
 // solo, sin tocar el frontmatter.
-const ogImage = await getImage({ src: t.imagen_portada, width: 1200, height: 630 });
+const ogImage = await getImage({ src: imagenPortada, width: 1200, height: 630 });
 
 const seo = {
   meta_title: t.seo.meta_title,
@@ -151,8 +158,8 @@ const jsonLdFaq =
     : null;
 ---
 
-<Layout seo={seo} idioma="es" mostrarWhatsappFlotante={false}>
-  <Header idioma="es" />
+<Layout seo={seo} idioma="es" mostrarWhatsappFlotante={false} urlAlterna={`/en/tours/${tour.id}/`}>
+  <Header idioma="es" urlAlterna={`/en/tours/${tour.id}/`} />
 
   <nav aria-label="Breadcrumb" class="mx-auto max-w-6xl px-6 pt-4 text-xs text-muted">
     <ol class="flex flex-wrap items-center gap-1">
@@ -177,7 +184,7 @@ const jsonLdFaq =
     h1={t.h1}
     subtitulo={t.subtitulo}
     badges={t.badges}
-    imagen={t.imagen_portada}
+    imagen={imagenPortada}
     ctaHref={ctaWhatsapp}
     ctaLabel={ctaLabelReserva}
     avisoTemporada={avisoTemporada}

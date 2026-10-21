@@ -18,9 +18,16 @@ export interface Props {
   // Hero/PriceTable (desktop) ya cubren la conversión — el botón flotante
   // ahí era un WhatsApp redundante encima de esos CTAs.
   mostrarWhatsappFlotante?: boolean;
+  // URL de la contraparte real en el otro idioma (ej. la página pasa
+  // "/en/" desde "/", o "/" desde "/en/"). Solo se declara cuando esa
+  // contraparte EXISTE de verdad — todavía es solo el Home (fase 1 del
+  // sitio bilingüe). Publicar un hreflang que apunte a una URL que no
+  // existe es peor que no tener hreflang — Google lo trata como señal
+  // rota, por eso el resto de las páginas se quedan sin este prop.
+  urlAlterna?: string;
 }
 
-const { seo, idioma = "es", mostrarWhatsappFlotante = true } = Astro.props;
+const { seo, idioma = "es", mostrarWhatsappFlotante = true, urlAlterna } = Astro.props;
 
 const siteUrl = "https://vallartamagico.com";
 const canonical = seo.canonical ?? new URL(Astro.url.pathname, siteUrl).toString();
@@ -28,11 +35,9 @@ const ogImage = seo.og_image
   ? new URL(seo.og_image, siteUrl).toString()
   : new URL("/og-default.jpg", siteUrl).toString();
 
-// hreflang: por ahora el sitio solo existe en español. En cuanto /en/ tenga
-// páginas reales, aquí agregamos el <link rel="alternate" hreflang="en" .../>
-// correspondiente. Publicar un hreflang="en" que apunte a una URL que no
-// existe es peor que no tener hreflang — Google lo trata como señal rota.
 const locales = { es: "es_MX", en: "en_US" };
+const idiomaAlterno = idioma === "en" ? "es" : "en";
+const urlAlternaAbsoluta = urlAlterna ? new URL(urlAlterna, siteUrl).toString() : undefined;
 ---
 
 <!doctype html>
@@ -64,8 +69,9 @@ const locales = { es: "es_MX", en: "en_US" };
          la etiqueta robots no esté presente en el HTML. -->
     <meta name="robots" content={seo.noindex ? "noindex, nofollow" : "index, follow"} />
 
-    <link rel="alternate" hreflang="es" href={canonical} />
-    <link rel="alternate" hreflang="x-default" href={canonical} />
+    <link rel="alternate" hreflang={idioma} href={canonical} />
+    {urlAlternaAbsoluta && <link rel="alternate" hreflang={idiomaAlterno} href={urlAlternaAbsoluta} />}
+    <link rel="alternate" hreflang="x-default" href={idioma === "es" ? canonical : (urlAlternaAbsoluta ?? canonical)} />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -97,11 +103,11 @@ const locales = { es: "es_MX", en: "en_US" };
       href="#contenido"
       class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:shadow-lg"
     >
-      Saltar al contenido
+      {idioma === "en" ? "Skip to content" : "Saltar al contenido"}
     </a>
     <GoogleTagManagerNoscript />
     <slot />
-    <CookieBanner />
-    {mostrarWhatsappFlotante && <FloatingWhatsApp />}
+    <CookieBanner idioma={idioma} />
+    {mostrarWhatsappFlotante && <FloatingWhatsApp idioma={idioma} />}
   </body>
 </html>

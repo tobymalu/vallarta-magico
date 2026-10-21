@@ -8,6 +8,28 @@
 // "Aceptar" y "Rechazar" con el mismo tamaño/prominencia (uno relleno,
 // otro con borde, pero ninguno es un link chiquito escondido) — es lo que
 // pide GDPR: que rechazar sea tan fácil como aceptar.
+export interface Props {
+  idioma?: "es" | "en";
+}
+
+const { idioma = "es" } = Astro.props;
+
+// El aviso de privacidad enlazado todavía solo existe en español (fase 2
+// de la traducción) — se mantiene igual en ambos idiomas a propósito.
+const t =
+  idioma === "en"
+    ? {
+        texto: "We use our own and third-party cookies to analyze your browsing and improve your experience.",
+        masInfo: "More information",
+        rechazar: "Decline",
+        aceptar: "Accept",
+      }
+    : {
+        texto: "Usamos cookies propias y de terceros para analizar tu navegación y mejorar tu experiencia.",
+        masInfo: "Más información",
+        rechazar: "Rechazar",
+        aceptar: "Aceptar",
+      };
 ---
 
 <div
@@ -17,8 +39,9 @@
 >
   <div class="mx-auto flex max-w-6xl flex-col items-center gap-4 sm:flex-row sm:justify-between">
     <p class="text-sm text-primary-foreground/90">
-      Usamos cookies propias y de terceros para analizar tu navegación y mejorar tu experiencia.
-      <a href="/aviso-de-privacidad" class="underline underline-offset-2 hover:text-accent">Más información</a>
+      {t.texto}
+      {" "}
+      <a href="/aviso-de-privacidad" class="underline underline-offset-2 hover:text-accent">{t.masInfo}</a>
     </p>
     <div class="flex shrink-0 items-center gap-3">
       <button
@@ -26,14 +49,14 @@
         type="button"
         class="inline-flex items-center justify-center rounded-full border border-primary-foreground/40 px-6 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-foreground/10"
       >
-        Rechazar
+        {t.rechazar}
       </button>
       <button
         id="cookie-banner-aceptar"
         type="button"
         class="inline-flex items-center justify-center rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-accent-foreground transition hover:bg-accent/90"
       >
-        Aceptar
+        {t.aceptar}
       </button>
     </div>
   </div>

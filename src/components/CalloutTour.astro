@@ -13,10 +13,21 @@ export interface Props {
   // Texto persuasivo específico para este contexto (ej. "para ver los
   // arcos de cerca..."). Si no se pasa, se arma un texto genérico.
   texto?: string;
+  idioma?: "es" | "en";
 }
 
-const { tourSlug, texto } = Astro.props;
-const tour = await getEntry("tours", tourSlug);
+const { tourSlug, texto, idioma = "es" } = Astro.props;
+// En inglés, tourSlug sigue siendo el slug base (sin "-en") — el artículo
+// .mdx no necesita saberlo, este componente agrega el sufijo internamente
+// para jalar la entrada en inglés y arma el link a /en/tours/ sin él.
+const idSlug = idioma === "en" ? `${tourSlug}-en` : tourSlug;
+const tour = await getEntry("tours", idSlug);
+const basePath = idioma === "en" ? "/en/tours" : "/tours";
+
+const t =
+  idioma === "en"
+    ? { tip: "💡 Vallarta Mágico Tip", verTour: "View tour →" }
+    : { tip: "💡 Tip de Vallarta Mágico", verTour: "Ver tour →" };
 ---
 
 {
@@ -25,22 +36,24 @@ const tour = await getEntry("tours", tourSlug);
     // Typography (que envuelve el artículo completo en ActivityLayout),
     // para que el link no herede subrayado/color de "prose-a" etc.
     <a
-      href={`/tours/${tour.id}`}
+      href={`${basePath}/${tourSlug}`}
       class="not-prose my-10 flex items-center gap-4 rounded-2xl border border-accent/30 bg-accent/5 p-5 no-underline transition hover:border-accent/60"
     >
       <Image
-        src={tour.data.imagen_portada}
+        src={tour.data.imagen_portada!}
         alt=""
         width={96}
         height={96}
         class="h-20 w-20 shrink-0 rounded-xl object-cover"
       />
       <div>
-        <p class="text-xs font-semibold uppercase tracking-wide text-accent">💡 Tip de Vallarta Mágico</p>
+        <p class="text-xs font-semibold uppercase tracking-wide text-accent">{t.tip}</p>
         <p class="mt-1 text-sm text-foreground/90">
-          {texto ?? `¿Quieres vivirlo de cerca? Conoce nuestro tour "${tour.data.nombre}".`}
+          {texto ?? (idioma === "en"
+            ? `Want to experience it up close? Check out our "${tour.data.nombre}" tour.`
+            : `¿Quieres vivirlo de cerca? Conoce nuestro tour "${tour.data.nombre}".`)}
         </p>
-        <span class="mt-2 inline-block text-sm font-semibold text-accent">Ver tour →</span>
+        <span class="mt-2 inline-block text-sm font-semibold text-accent">{t.verTour}</span>
       </div>
     </a>
   )
