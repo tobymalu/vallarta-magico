@@ -1,0 +1,99 @@
+---
+// Últimos artículos de la guía, en el Home justo antes del Footer —
+// pedido explícito para SEO: un link interno desde la página con más
+// autoridad del sitio (el Home) acelera que Google rastree e indexe los
+// artículos nuevos, en vez de depender solo de que los encuentre vía
+// /guia. Mismo criterio de "jalar de la colección" que FeaturedGrid.astro
+// (no hardcodear slugs a mano, así nunca queda desactualizado).
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import { CATEGORIA_INFO, CATEGORIA_INFO_EN } from "../lib/guia";
+
+export interface Props {
+  idioma?: "es" | "en";
+}
+
+const { idioma = "es" } = Astro.props;
+const esEn = idioma === "en";
+const basePath = esEn ? "/en/guide" : "/guia";
+const catInfo = esEn ? CATEGORIA_INFO_EN : CATEGORIA_INFO;
+
+const t = esEn
+  ? {
+      eyebrow: "From the Blog",
+      titulo: "Latest from our guide",
+      leer: "Read guide →",
+      verTodo: "See all articles →",
+    }
+  : {
+      eyebrow: "Desde el Blog",
+      titulo: "Lo último de nuestra guía",
+      leer: "Leer guía →",
+      verTodo: "Ver todos los artículos →",
+    };
+
+// Entradas en inglés = slug con sufijo "-en" (ver content/guia/*-en/) —
+// mismo filtro que en el resto del sitio bilingüe.
+const todaLaGuia = (await getCollection("guia")).filter((a) =>
+  esEn ? a.id.endsWith("-en") : !a.id.endsWith("-en"),
+);
+
+// Más recientes primero, según la fecha de revisión editorial (el mismo
+// campo que ya se usa como señal de "contenido vivo" en cada artículo).
+const articulos = todaLaGuia
+  .sort((a, b) => b.data.fecha_actualizacion.valueOf() - a.data.fecha_actualizacion.valueOf())
+  .slice(0, 3);
+
+// Las entradas "-en" llevan el sufijo en su id — hay que quitarlo para
+// armar la URL real (/en/guide/categoria/slug, sin el sufijo).
+const slugDe = (id: string) => id.replace(/-en$/, "");
+---
+
+{
+  articulos.length > 0 && (
+    <section class="px-6 py-16 sm:py-20">
+      <div class="mx-auto max-w-6xl">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-[0.18em] text-accent">{t.eyebrow}</p>
+            <h2 class="mt-2 font-serif text-3xl text-foreground sm:text-4xl">{t.titulo}</h2>
+          </div>
+          <a href={basePath} class="text-sm font-semibold text-accent hover:underline">
+            {t.verTodo}
+          </a>
+        </div>
+
+        <div class="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {articulos.map((a) => (
+            <a
+              href={`${basePath}/${a.data.categoria}/${slugDe(a.id)}`}
+              class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-foreground/5 transition hover:shadow-md"
+            >
+              {a.data.imagen_portada && (
+                <div class="aspect-16/9 overflow-hidden">
+                  <Image
+                    src={a.data.imagen_portada}
+                    alt={a.data.titulo}
+                    width={640}
+                    height={360}
+                    class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                  />
+                </div>
+              )}
+              <div class="flex flex-1 flex-col gap-2 p-5">
+                <p class="text-xs font-semibold uppercase tracking-wide text-accent">
+                  {catInfo[a.data.categoria].label}
+                </p>
+                <h3 class="font-serif text-xl text-foreground">{a.data.titulo}</h3>
+                <p class="line-clamp-2 text-sm text-muted">{a.data.descripcion}</p>
+                <span class="mt-auto pt-4 text-sm font-semibold text-accent group-hover:underline">
+                  {t.leer}
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

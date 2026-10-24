@@ -5,6 +5,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import FeaturedGrid from "../components/FeaturedGrid.astro";
 import TestimonialGrid from "../components/TestimonialGrid.astro";
+import LatestArticles from "../components/LatestArticles.astro";
 import { TESTIMONIOS } from "../lib/testimonios";
 import heroImage from "../assets/home-hero.jpg";
 
@@ -60,5 +61,7 @@ const seo = {
     reviews={TESTIMONIOS}
   />
 
-  <Footer />
+  <LatestArticles idioma="es" />
+
+  <Footer idioma="es" />
 </Layout>
