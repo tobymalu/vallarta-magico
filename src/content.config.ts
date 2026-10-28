@@ -70,6 +70,26 @@ const tours = defineCollection({
       // portuario, etc.) — crucial para confianza, regla 12/13 del blueprint.
       nota_precio: z.string().optional(),
 
+      // Badge de promo arriba del CTA del Hero (ej. "🔥 ¡Super Promo! Hasta
+      // 35% OFF reservando hoy"). Optional y por tour, a propósito: no es
+      // un cálculo automático a partir de precio_regular porque el texto
+      // de marketing (qué tanto se resalta, si dice "Hasta X%" o un monto
+      // fijo) lo decide el copy, no una fórmula — pero el % que contiene
+      // sigue viniendo de precio/precio_regular reales, nunca inventado.
+      // Si el tour está fuera de temporada, [slug].astro le da prioridad
+      // al aviso de temporada sobre este badge (no tiene caso anunciar
+      // promo de un tour que no se puede reservar hoy).
+      promo_badge: z.string().optional(),
+
+      // Etiqueta corta para el CTA principal del Hero (ej. "Reservar
+      // Cuatrimoto o RZR"). Si se define, [slug].astro arma el botón como
+      // "{cta_etiqueta} desde $X MXN" usando el precio más bajo calculado
+      // en vivo — así el botón nunca queda con un precio viejo "pegado"
+      // si el precio cambia, a diferencia de escribir el monto a mano en
+      // el texto del botón. Si no se define, cae al CTA genérico de
+      // siempre ("Ver Disponibilidad y Reservar").
+      cta_etiqueta: z.string().optional(),
+
       incluye: z.array(z.string()).default([]),
       no_incluye: z.array(z.string()).default([]),
 

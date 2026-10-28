@@ -58,7 +58,14 @@ const precioMasBajo = (
 // ajusta, en vez de dejar que el usuario intente reservar una fecha que
 // el tour no ofrece.
 const enTemporada = estaEnTemporada(t.temporada);
-const ctaLabelReserva = enTemporada ? "Ver Disponibilidad y Reservar" : "Unirme a Lista de Espera";
+// Si el tour define cta_etiqueta (ej. "Reservar Cuatrimoto o RZR"), el CTA
+// del Hero se arma con el precio más bajo calculado en vivo — así nunca
+// queda un monto viejo "pegado" en el botón si el precio cambia.
+const ctaLabelReserva = !enTemporada
+  ? "Unirme a Lista de Espera"
+  : t.cta_etiqueta
+    ? `${t.cta_etiqueta} desde $${precioMasBajo.precio.toLocaleString("es-MX")} ${precioMasBajo.moneda}`
+    : "Ver Disponibilidad y Reservar";
 const ctaLabelPrecio = enTemporada ? "Quiero mi lugar" : "Anotarme en lista de espera";
 const ctaLabelSticky = enTemporada ? "Reservar" : "Lista de espera";
 // Mismo nivel que usan TourCard/PriceTable para el badge "Promo -X%"
@@ -75,8 +82,12 @@ const mensajeSticky = !enTemporada
   : enPromo
     ? "Reserva ya por tiempo limitado."
     : "¡Obtén un 20% reservando hoy!";
+// Fuera de temporada tiene prioridad sobre el badge de promo: no tiene
+// caso anunciar un descuento de un tour que hoy no se puede reservar.
 const avisoTemporada =
-  !enTemporada && t.temporada ? `Fuera de temporada. Este tour opera de ${t.temporada.descripcion}.` : undefined;
+  !enTemporada && t.temporada
+    ? `Fuera de temporada. Este tour opera de ${t.temporada.descripcion}.`
+    : t.promo_badge;
 const ctaWhatsapp = whatsappUrl(
   enTemporada
     ? `Hola, quiero reservar el tour "${t.nombre}".`

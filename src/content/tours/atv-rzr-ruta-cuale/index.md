@@ -17,24 +17,37 @@ badges:
 # Nota de conversión: en tours ATV/RZR el usuario se confunde fácil entre
 # "precio por persona" vs "precio por vehículo" — por eso las etiquetas son
 # explícitas sobre capacidad, y lo reforzamos en nota_precio y en el FAQ.
+#
+# precio_regular: tipo de cambio de referencia $18 MXN/USD (mismo que
+# TIPO_CAMBIO_USD_MXN en site.ts) sobre la tarifa regular en USD de cada
+# vehículo — no es el precio que se cobra, solo el "antes" tachado para
+# mostrar el descuento real de la promo vigente (precio).
 precios:
   - etiqueta: "Cuatrimoto Sencilla (1 persona)"
     precio: 1590
+    precio_regular: 1854 # $103 USD
     moneda: "MXN"
   - etiqueta: "Cuatrimoto Doble (2 personas)"
     precio: 1790
+    precio_regular: 2502 # $139 USD
     moneda: "MXN"
   - etiqueta: "RZR 2 plazas (1 a 2 personas)"
     precio: 2490
+    precio_regular: 3798 # $211 USD
     moneda: "MXN"
   - etiqueta: "RZR 4 plazas (3 a 4 personas)"
     precio: 2990
+    precio_regular: 4284 # $238 USD
     moneda: "MXN"
   - etiqueta: "RZR 6 plazas (5 a 6 personas)"
     precio: 3290
+    precio_regular: 4698 # $261 USD
     moneda: "MXN"
 
 nota_precio: "Los precios son por vehículo completo, no por persona: un RZR de 4 plazas cuesta $2,990 MXN sin importar si van 3 o 4 personas a bordo. No hay cargos adicionales en el lugar (sin seguro ni impuestos extra): el precio publicado es el total a pagar."
+
+promo_badge: "🔥 ¡Super Promo! Hasta 35% OFF reservando hoy"
+cta_etiqueta: "Reservar Cuatrimoto o RZR"
 
 incluye:
   - "Tour guiado por expertos locales en la Ruta Cuale"

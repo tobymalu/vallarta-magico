@@ -17,21 +17,29 @@ badges:
 precios:
   - etiqueta: "Single ATV (1 person)"
     precio: 1590
+    precio_regular: 1854 # $103 USD
     moneda: "MXN"
   - etiqueta: "Double ATV (2 people)"
     precio: 1790
+    precio_regular: 2502 # $139 USD
     moneda: "MXN"
   - etiqueta: "RZR 2-seater (1 to 2 people)"
     precio: 2490
+    precio_regular: 3798 # $211 USD
     moneda: "MXN"
   - etiqueta: "RZR 4-seater (3 to 4 people)"
     precio: 2990
+    precio_regular: 4284 # $238 USD
     moneda: "MXN"
   - etiqueta: "RZR 6-seater (5 to 6 people)"
     precio: 3290
+    precio_regular: 4698 # $261 USD
     moneda: "MXN"
 
 nota_precio: "Prices are per full vehicle, not per person: a 4-seater RZR costs $2,990 MXN whether 3 or 4 people ride along. No extra charges on site (no insurance or added taxes) — the listed price is the total you pay."
+
+promo_badge: "🔥 Super Promo! Up to 35% OFF booking today"
+cta_etiqueta: "Book Your ATV or RZR"
 
 incluye:
   - "Guided tour with local experts on the Cuale Route"

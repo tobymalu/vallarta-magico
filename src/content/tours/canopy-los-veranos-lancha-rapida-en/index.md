@@ -16,18 +16,24 @@ badges:
 
 precios:
   - etiqueta: "Adults (Zip-lines + Boat)"
-    precio: 105
-    moneda: "USD"
+    precio: 1590
+    precio_regular: 1890 # $105 USD
+    moneda: "MXN"
   - etiqueta: "Children 5 to 11 (Zip-lines + Boat)"
-    precio: 75
-    moneda: "USD"
+    precio: 1190
+    precio_regular: 1350 # $75 USD
+    moneda: "MXN"
   - etiqueta: "Companion Pass (Boat + Facilities Only)"
-    precio: 30
-    moneda: "USD"
+    precio: 490
+    precio_regular: 540 # $30 USD
+    moneda: "MXN"
     nota: "Ideal for anyone who doesn't want to zip-line: includes the boat, river access, kayaking, the zoo and a tequila tasting."
     tipo: "addon"
 
 nota_precio: "A $30 MXN (approx. $2 USD) per-person port tax is paid in cash when boarding."
+
+promo_badge: "💰 Promotional peso rate — skip the official dollar ticket price"
+cta_etiqueta: "Book Los Veranos Canopy"
 
 incluye:
   - "Round-trip transfer on an APEX speedboat"
@@ -73,7 +79,7 @@ faq:
   - pregunta: "Do you pick up at my hotel?"
     respuesta: "We don't offer direct lobby pick-up, but our two meeting points (Nuevo Vallarta and the North Hotel Zone) are central and very easy to reach from any hotel in the bay."
   - pregunta: "Someone in my group is afraid of heights — is it still worth it for them?"
-    respuesta: "Absolutely! That's exactly why we created the Companion Pass ($30 USD). They can enjoy the speedboat ride, relax at the river-side restaurant, pet animals at the sanctuary, go kayaking and join the tequila tasting, all while the rest of the group flies over the jungle."
+    respuesta: "Absolutely! That's exactly why we created the Companion Pass ($490 MXN). They can enjoy the speedboat ride, relax at the river-side restaurant, pet animals at the sanctuary, go kayaking and join the tequila tasting, all while the rest of the group flies over the jungle."
 
 atraccion:
   nombre: "Los Veranos"

@@ -14,23 +14,31 @@ badges:
   - "🚤 Traslado en Lancha Rápida"
   - "🐒 Santuario Animal"
 
-# Nota de conversión: este tour se cobra en USD (a diferencia del resto
-# del catálogo, en MXN). El schema soporta moneda por línea de precio,
-# así que no requiere ningún tratamiento especial adicional.
+# Tarifa promocional en pesos mexicanos: antes se cobraba directo en USD
+# (taquilla oficial). precio_regular es esa tarifa oficial convertida a
+# MXN con el tipo de cambio de referencia $18 MXN/USD (mismo que
+# TIPO_CAMBIO_USD_MXN en site.ts) — no es lo que se cobra, solo el
+# "antes" tachado para mostrar el ahorro real de nuestra promo (precio).
 precios:
   - etiqueta: "Adultos (Tirolesas + Lancha)"
-    precio: 105
-    moneda: "USD"
+    precio: 1590
+    precio_regular: 1890 # $105 USD
+    moneda: "MXN"
   - etiqueta: "Menores 5 a 11 años (Tirolesas + Lancha)"
-    precio: 75
-    moneda: "USD"
+    precio: 1190
+    precio_regular: 1350 # $75 USD
+    moneda: "MXN"
   - etiqueta: "Pase de Acompañante (Solo Lancha + Instalaciones)"
-    precio: 30
-    moneda: "USD"
+    precio: 490
+    precio_regular: 540 # $30 USD
+    moneda: "MXN"
     nota: "Ideal para quien no quiere hacer tirolesas: incluye lancha, acceso al río, kayak, zoológico y cata de tequila."
     tipo: "addon"
 
 nota_precio: "Se paga un impuesto portuario de $30 MXN (aprox. $2 USD) por persona, en efectivo, al abordar."
+
+promo_badge: "💰 Tarifa promocional en pesos — no pagues la taquilla en dólares"
+cta_etiqueta: "Reservar Canopy Los Veranos"
 
 incluye:
   - "Traslado ida y vuelta en lancha rápida APEX"
@@ -76,7 +84,7 @@ faq:
   - pregunta: "¿Me recogen en mi hotel?"
     respuesta: "No ofrecemos pick-up directo en el lobby, pero nuestros dos puntos de encuentro (Nuevo Vallarta y Zona Hotelera Norte) son céntricos y de muy fácil acceso desde cualquier hotel de la bahía."
   - pregunta: "Alguien en mi grupo tiene miedo a las alturas, ¿vale la pena que vaya?"
-    respuesta: "¡Totalmente! Para eso creamos el Pase de Acompañante ($30 USD). Podrá disfrutar del paseo en lancha rápida, relajarse en el restaurante junto al río, acariciar animales en el santuario, hacer kayak y unirse a la cata de tequila, todo mientras el resto del grupo vuela por la selva."
+    respuesta: "¡Totalmente! Para eso creamos el Pase de Acompañante ($490 MXN). Podrá disfrutar del paseo en lancha rápida, relajarse en el restaurante junto al río, acariciar animales en el santuario, hacer kayak y unirse a la cata de tequila, todo mientras el resto del grupo vuela por la selva."
 
 atraccion:
   nombre: "Los Veranos"

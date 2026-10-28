@@ -52,7 +52,13 @@ const precioMasBajo = (
   preciosPrincipales.length > 0 ? preciosPrincipales : t.precios
 ).reduce((min, p) => (p.precio < min.precio ? p : min));
 const enTemporada = estaEnTemporada(t.temporada);
-const ctaLabelReserva = enTemporada ? "Check Availability & Book" : "Join the Waitlist";
+// Si el tour define cta_etiqueta, el CTA del Hero se arma con el precio
+// más bajo calculado en vivo — mismo criterio que en tours/[slug].astro.
+const ctaLabelReserva = !enTemporada
+  ? "Join the Waitlist"
+  : t.cta_etiqueta
+    ? `${t.cta_etiqueta} from $${precioMasBajo.precio.toLocaleString("en-US")} ${precioMasBajo.moneda}`
+    : "Check Availability & Book";
 const ctaLabelPrecio = enTemporada ? "I want my spot" : "Join the waitlist";
 const ctaLabelSticky = enTemporada ? "Book Now" : "Waitlist";
 const nivelPromo = preciosPrincipales.find((p) => /^adults/i.test(p.etiqueta)) ?? precioMasBajo;
@@ -63,7 +69,9 @@ const mensajeSticky = !enTemporada
     ? "Book now for a limited time."
     : "Get 20% off booking today!";
 const avisoTemporada =
-  !enTemporada && t.temporada ? `Out of season. This tour operates ${t.temporada.descripcion}.` : undefined;
+  !enTemporada && t.temporada
+    ? `Out of season. This tour operates ${t.temporada.descripcion}.`
+    : t.promo_badge;
 const ctaWhatsapp = whatsappUrl(
   enTemporada
     ? `Hi, I'd like to book the "${t.nombre}" tour.`

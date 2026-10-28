@@ -12,6 +12,15 @@ export default defineConfig({
   // vez de relativas — debe ser la URL de producción, la misma que
   // SITE.url en src/lib/site.ts.
   site: 'https://vallartamagico.com',
+  // trailingSlash: se probó "always" explícito y se revirtió — en el
+  // servidor de "astro dev" (no en el build final) hace que CUALQUIER
+  // link interno del sitio sin barra final (nav, tarjetas de tours,
+  // breadcrumbs, etc. — son la mayoría) devuelva 404 en vez de redirigir.
+  // No hacía falta de todos modos: el build estático ya genera cada
+  // ruta como <ruta>/index.html consistentemente (verificado comparando
+  // el <link rel="canonical"> de varias páginas), así que no hay
+  // duplicados reales que corregir — el default "ignore" de Astro ya
+  // resuelve ambas formas sin problema en dev.
   // Mapa de redirecciones de URLs viejas → nuevas. OJO: en este sitio
   // (output estático, sin adaptador de servidor) esto NO genera un 301 real
   // — Astro solo puede emitir una página HTML con <meta http-equiv="refresh">
