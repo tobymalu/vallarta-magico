@@ -35,22 +35,40 @@ const mensaje = esEn
   const boton = document.getElementById("whatsapp-flotante");
   const cookieBanner = document.getElementById("cookie-banner");
 
-  // El banner de cookies es "fixed bottom-0" igual que este botón — si
-  // está visible, subimos el botón para que no quede tapado por/dentro
-  // del banner.
+  // Evita "reflow forzado" (PageSpeed): la versión anterior leía
+  // cookieBanner.offsetParent/offsetHeight justo cuando el MutationObserver
+  // de abajo detectaba que CookieBanner.astro acababa de ESCRIBIR su
+  // atributo "hidden" — ese patrón "escribo al DOM → leo geometría de
+  // inmediato" es el "layout thrashing" clásico. Ahora:
+  // - La visibilidad se lee de cookieBanner.hidden (propiedad booleana
+  //   que refleja el atributo — no es una lectura de layout, a
+  //   diferencia de offsetParent).
+  // - El alto se cachea vía ResizeObserver, cuyo callback ya corre
+  //   después de que el navegador resolvió el layout por su cuenta.
+  //   Dentro del callback usamos getBoundingClientRect() (border-box,
+  //   incluye padding/borde) en vez de entries[0].contentRect (solo
+  //   content-box) — CookieBanner tiene padding+borde, así que
+  //   contentRect lo dejaba corto y el botón quedaba encimado con el
+  //   banner en vez de justo arriba.
+  let cookieHeight = 0;
+
   function ajustar() {
     if (!boton) return;
-    const cookieVisible = !!cookieBanner && cookieBanner.offsetParent !== null;
-    boton.style.bottom = cookieVisible ? `${cookieBanner.offsetHeight + 16}px` : "";
+    const cookieVisible = !!cookieBanner && !cookieBanner.hidden;
+    boton.style.bottom = cookieVisible ? `${cookieHeight + 16}px` : "";
   }
 
-  ajustar();
-  window.addEventListener("resize", ajustar);
-
-  // El banner se oculta con el atributo "hidden" al aceptar/rechazar (ver
-  // CookieBanner.astro) — observamos ese cambio para bajar el botón de
-  // vuelta sin depender de que CookieBanner nos avise.
   if (cookieBanner) {
+    new ResizeObserver((entries) => {
+      cookieHeight = entries[0].target.getBoundingClientRect().height;
+      ajustar();
+    }).observe(cookieBanner);
+
+    // El banner cambia su atributo "hidden" al aceptar/rechazar (ver
+    // CookieBanner.astro) — lo observamos para subir/bajar el botón sin
+    // depender de que CookieBanner nos avise directamente.
     new MutationObserver(ajustar).observe(cookieBanner, { attributes: true, attributeFilter: ["hidden"] });
+  } else {
+    ajustar();
   }
 </script>

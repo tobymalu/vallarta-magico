@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { Font } from "astro:assets";
 import GoogleTagManager from "../components/GoogleTagManager.astro";
 import GoogleTagManagerNoscript from "../components/GoogleTagManagerNoscript.astro";
 import CookieBanner from "../components/CookieBanner.astro";
@@ -38,6 +39,12 @@ const ogImage = seo.og_image
 const locales = { es: "es_MX", en: "en_US" };
 const idiomaAlterno = idioma === "en" ? "es" : "en";
 const urlAlternaAbsoluta = urlAlterna ? new URL(urlAlterna, siteUrl).toString() : undefined;
+
+// Fuentes: Fraunces (títulos, serif editorial) + Inter (cuerpo),
+// autohospedadas vía la Fonts API de Astro — sin requests a Google
+// Fonts en runtime. Solo se precarga Inter (texto principal, visible
+// en toda página desde el primer render); Fraunces solo se usa en
+// encabezados y puede esperar a swap sin afectar el LCP.
 ---
 
 <!doctype html>
@@ -88,13 +95,8 @@ const urlAlternaAbsoluta = urlAlterna ? new URL(urlAlterna, siteUrl).toString() 
     <meta name="twitter:description" content={seo.meta_description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <!-- Fuentes: Fraunces (títulos, serif editorial) + Inter (cuerpo) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-fraunces" />
   </head>
   <body class="bg-background text-foreground">
     <!-- Salta el Header/nav (accesibilidad, WCAG 2.4.1) — el destino

@@ -43,7 +43,7 @@ seo:
   noindex: false
 ---
 
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import CalloutTour from "../../../components/CalloutTour.astro";
 import fotoCaminataSendero from "./caminata-senderismo-boca-de-tomatlan-a-colomitos.jpg";
 import fotoCaminataVista from "./caminata-senderismo-boca-de-tomatlan-a-colomitos-vista.jpg";
@@ -69,19 +69,25 @@ El sendero que conecta Boca de Tomatlán con Colomitos es uno de los recorridos 
 > **Ideal para:** amantes del senderismo, jóvenes y viajeros con buena condición física.
 
 <div class="not-prose my-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-  <Image
+  <Picture
     src={fotoCaminataSendero}
     alt="Senderistas caminando por el tramo de selva hacia Playa Colomitos"
     width={800}
     height={1000}
     class="h-72 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
-  <Image
+  <Picture
     src={fotoCaminataVista}
     alt="Primera vista de la bahía de Colomitos asomándose entre los árboles del sendero"
     width={800}
     height={1000}
     class="h-72 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
 </div>
 <p class="not-prose -mt-4 mb-8 text-center text-sm text-muted">
@@ -103,19 +109,25 @@ Si prefieres ahorrar energía o planeas continuar hacia otras playas del sur (co
 > **Ideal para:** familias con niños, adultos mayores, o quienes llevan hielera, sombrillas y equipaje de playa.
 
 <div class="not-prose my-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-  <Image
+  <Picture
     src={fotoTaxiAcuatico}
     alt="Lancha o taxi acuático desembarcando pasajeros en las aguas cristalinas de Colomitos"
     width={800}
     height={600}
     class="h-56 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
-  <Image
+  <Picture
     src={fotoLanchas}
     alt="Lanchas ancladas frente a Playa Colomitos vistas desde el sendero"
     width={800}
     height={600}
     class="h-56 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
 </div>
 <p class="not-prose -mt-4 mb-8 text-center text-sm text-muted">

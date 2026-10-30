@@ -4,7 +4,7 @@
 // con snap (funciona con swipe en móvil sin JS) + botones prev/next para
 // desktop, mismo patrón de script vanilla que ya usa Header.astro.
 import type { ImageMetadata } from "astro";
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 
 export interface Props {
   fotos: { imagen: ImageMetadata; alt: string }[];
@@ -47,7 +47,18 @@ const { fotos, titulo = "Galería" } = Astro.props;
         >
           {fotos.map((foto) => (
             <div class="aspect-4/3 w-72 shrink-0 snap-start overflow-hidden rounded-2xl sm:w-96">
-              <Image src={foto.imagen} alt={foto.alt} width={480} height={360} class="h-full w-full object-cover" />
+              <Picture
+                src={foto.imagen}
+                alt={foto.alt}
+                width={480}
+                height={360}
+                widths={[288, 384, 480]}
+                sizes="(min-width: 640px) 384px, 288px"
+                formats={["webp"]}
+                quality={70}
+                class="h-full w-full object-cover"
+                loading="lazy"
+              />
             </div>
           ))}
         </div>

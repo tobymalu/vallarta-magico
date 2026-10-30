@@ -38,7 +38,7 @@ seo:
   noindex: false
 ---
 
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import CalloutTour from "../../../components/CalloutTour.astro";
 import fotoLancha from "./lancha-rapida-apex-los-veranos-canopy.jpg";
 import fotoRio from "./rio-los-veranos.jpg";
@@ -55,12 +55,15 @@ If you're after adrenaline paired with mountain-meets-beach scenery, this tour b
 3. **Companion Pass.** If someone in your group doesn't want to fly because of a fear of heights, they can get the boat ride and enjoy the river-side restaurant, the natural pools, the kayaks and the exotic sanctuary.
 
 <figure class="not-prose my-8">
-  <Image
+  <Picture
     src={fotoLancha}
     alt="Speedboat transfer to the Los Veranos adventure park"
     width={1200}
     height={800}
     class="mx-auto h-auto w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
   <figcaption class="mt-2 text-center text-sm text-muted">
     The APEX speedboat crossing is part of the experience, not just transport.
@@ -89,19 +92,25 @@ Many tourists are surprised to see the box-office rate listed in dollars. At **V
 - ✅ Artisanal Mexican tequila tasting.
 
 <div class="not-prose my-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-  <Image
+  <Picture
     src={fotoRio}
     alt="Couple enjoying the natural river slide at Los Veranos"
     width={800}
     height={600}
     class="h-56 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
-  <Image
+  <Picture
     src={fotoSantuario}
     alt="Riverside relaxation area and exotic wildlife sanctuary at Los Veranos"
     width={800}
     height={600}
     class="h-56 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
 </div>
 

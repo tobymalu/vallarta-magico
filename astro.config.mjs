@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, fontProviders } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
@@ -38,6 +38,17 @@ export default defineConfig({
     // como venía en el mapa original — esa apuntaba a un 404.
     '/destino/mexico/vallarta/malecon': '/guia/actividades/el-malecon-puerto-vallarta',
   },
+  // Por qué este sitio NO sirve AVIF (aunque es la recomendación típica
+  // de PageSpeed): se midió en este proyecto — con el "effort" por
+  // defecto de sharp, los AVIF salían 26-60% MÁS PESADOS que el WebP
+  // equivalente para las fotos reales del sitio (confirmado en varias
+  // imágenes, no un caso aislado). Se probó subir el effort al máximo
+  // (9) para forzar mejor compresión: el tamaño del AVIF no cambió NADA,
+  // pero cada imagen tardó 15-35 segundos en codificarse (vs. ~1s en
+  // default) — el build completo hubiera tardado ~15 minutos en vez de
+  // ~1. AVIF generalmente le gana a WebP en ilustraciones/gráficos, pero
+  // no siempre en fotografía — que es prácticamente todo el contenido de
+  // este sitio. Por eso <Picture> solo pide formats={["webp"]}.
   integrations: [
     // mdx(): la colección "guia" usa .mdx para poder inyectar
     // componentes (ej. CalloutTour) dentro del cuerpo del artículo, algo
@@ -48,6 +59,45 @@ export default defineConfig({
     // apunta ahí para que Google las descubra.
     sitemap(),
   ],
+  // Fuentes: antes se pedían a fonts.googleapis.com/fonts.gstatic.com en
+  // cada visita (2 dominios + 1 request de CSS + requests de woff2 =
+  // la cadena de solicitudes críticas que marcaba PageSpeed). La Fonts
+  // API de Astro (estable desde 6.0, usamos 7.2) descarga los woff2 en
+  // build time y los sirve desde el propio dominio — cero requests a
+  // Google en runtime. Solo se piden los pesos/estilos/subset que el
+  // sitio usa de verdad (revisado en el CSS/Tailwind):
+  // - Fraunces: solo se usa normal (nunca italic) en pesos 400
+  //   (encabezados, sin utilidad de peso) y 600 (un solo badge en
+  //   HotelCard.astro) — "400 600" pide el rango variable completo.
+  // - Inter: normal en 400/500/600 (nunca 700 — ni siquiera el <strong>
+  //   del plugin de @tailwindcss/typography pasa de 600).
+  fonts: [
+    {
+      provider: fontProviders.google(),
+      name: 'Fraunces',
+      cssVariable: '--font-fraunces',
+      weights: ['400 600'],
+      styles: ['normal'],
+      subsets: ['latin'],
+      display: 'swap',
+      fallbacks: ['ui-serif', 'Georgia', 'serif'],
+    },
+    {
+      provider: fontProviders.google(),
+      name: 'Inter',
+      cssVariable: '--font-inter',
+      weights: ['400 600'],
+      styles: ['normal'],
+      subsets: ['latin'],
+      display: 'swap',
+      fallbacks: ['ui-sans-serif', 'system-ui', 'sans-serif'],
+    },
+  ],
+  build: {
+    // CSS pequeño (ej. el <style> con scope de SocialLinks.astro) va
+    // inline en el HTML en vez de ser su propio request bloqueante.
+    inlineStylesheets: 'always',
+  },
   vite: {
     plugins: [tailwindcss()]
   }

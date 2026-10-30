@@ -38,7 +38,7 @@ seo:
   noindex: false
 ---
 
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import CalloutTour from "../../../components/CalloutTour.astro";
 import fotoCueva from "./acceso-nadando-cueva-playa-escondida-marietas.jpg";
 import fotoNopaleraMar from "./playa-exterior-tour-tradicional-marietas.jpg";
@@ -64,12 +64,15 @@ Para ingresar a la Playa del Amor debes cumplir con estas normas vigentes:
 4. **Protección ecológica.** Está prohibido usar bloqueador solar (incluso biodegradable) antes de entrar al agua, así como llevar aletas de buceo, para no dañar los corales.
 
 <figure class="not-prose my-8">
-  <Image
+  <Picture
     src={fotoCueva}
     alt="Vista desde el interior del túnel rocoso de acceso a Playa Escondida, con un nadador asomándose por la entrada"
     width={1024}
     height={683}
     class="mx-auto h-auto w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
   <figcaption class="mt-2 text-center text-sm text-muted">
     Así se ve el túnel de acceso desde dentro de Playa Escondida — los ~80 metros se nadan con chaleco y casco.
@@ -89,19 +92,25 @@ Es muy común confundir ambos recorridos. Aquí las diferencias clave:
 | Precio promedio | Desde $1,400 MXN | $2,500 – $3,500+ MXN |
 
 <div class="not-prose my-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-  <Image
+  <Picture
     src={fotoNopaleraMar}
     alt="Visitantes nadando en las aguas turquesa de Playa Nopalera en el tour tradicional de Islas Marietas"
     width={800}
     height={600}
     class="h-56 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
-  <Image
+  <Picture
     src={fotoNopaleraCueva}
     alt="Formación rocosa en arco que enmarca la vista de Playa Nopalera en Islas Marietas"
     width={800}
     height={600}
     class="h-56 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
 </div>
 <p class="not-prose -mt-4 mb-8 text-center text-sm text-muted">

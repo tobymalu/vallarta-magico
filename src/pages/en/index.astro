@@ -8,7 +8,7 @@
 // reseñas en sí siguen en español: son nombres propios y testimonios
 // reales de clientes, no texto de interfaz — traducirlos bien es
 // trabajo de contenido, no de infraestructura.
-import { Image, getImage } from "astro:assets";
+import { Picture, getImage } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
@@ -32,13 +32,18 @@ const seo = {
   <Header idioma="en" urlAlterna="/" />
 
   <section class="relative isolate overflow-hidden">
-    <Image
+    <Picture
       src={heroImage}
       alt="The Puerto Vallarta letters and the Seahorse statue on the Malecón"
       width={1920}
       height={800}
+      widths={[640, 1024, 1920]}
+      sizes="100vw"
+      formats={["webp"]}
+      quality={70}
       class="absolute inset-0 -z-10 h-full w-full object-cover"
-      priority
+      loading="eager"
+      fetchpriority="high"
     />
     <div class="absolute inset-0 -z-10 bg-gradient-to-t from-primary via-primary/80 to-primary/40" />
 

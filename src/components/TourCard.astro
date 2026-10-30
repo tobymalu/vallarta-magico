@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import { estaEnTemporada } from "../lib/temporada";
 import { TIPO_CAMBIO_USD_MXN } from "../lib/site";
 
@@ -77,12 +77,17 @@ const enTemporada = estaEnTemporada(tour.data.temporada);
   class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-foreground/5 transition hover:shadow-md"
 >
   <div class="relative aspect-4/3 overflow-hidden">
-    <Image
+    <Picture
       src={tour.data.imagen_portada!}
       alt={tour.data.nombre}
       width={480}
       height={360}
+      widths={[384, 480, 640]}
+      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+      formats={["webp"]}
+      quality={70}
       class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+      loading="lazy"
     />
     {
       !enTemporada && tour.data.temporada && (

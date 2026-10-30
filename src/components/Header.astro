@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import { NAV_LINKS, NAV_LINKS_EN, whatsappUrl } from "../lib/site";
 import logo from "../assets/logo.png";
 
@@ -47,7 +47,16 @@ const t = esEn
 <header class="sticky top-0 z-50 border-b border-foreground/10 bg-background/95 backdrop-blur">
   <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
     <a href={inicio} class="flex items-center gap-2.5 font-serif text-xl text-primary">
-      <Image src={logo} alt="" role="presentation" width={40} height={40} class="h-10 w-10 rounded-full" />
+      <Picture
+        src={logo}
+        alt=""
+        role="presentation"
+        width={40}
+        height={40}
+        formats={["webp"]}
+        quality={70}
+        class="h-10 w-10 rounded-full"
+      />
       Vallarta <span class="text-accent">Mágico</span>
     </a>
 

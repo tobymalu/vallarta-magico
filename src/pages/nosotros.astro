@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
@@ -51,13 +51,19 @@ const valores = [
   <!-- Hero: landing de agencia moderna, no un blog. Imagen de fondo con
        overlay + H1 grande, mismo tratamiento visual que TourHero. -->
   <section class="relative isolate overflow-hidden">
-    <Image
+    <Picture
       src={nosotrosHero}
       alt=""
       role="presentation"
       width={1600}
       height={900}
+      widths={[640, 1024, 1600]}
+      sizes="100vw"
+      formats={["webp"]}
+      quality={70}
       class="absolute inset-0 -z-10 h-full w-full object-cover"
+      loading="eager"
+      fetchpriority="high"
     />
     <div class="absolute inset-0 -z-10 bg-gradient-to-t from-primary via-primary/85 to-primary/50" />
 
@@ -88,12 +94,17 @@ const valores = [
         </p>
       </div>
       <div class="overflow-hidden rounded-2xl">
-        <Image
+        <Picture
           src={nosotrosHistoria}
           alt="Nuestra primera oficina de Vallarta Mágico"
           width={1200}
           height={900}
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          formats={["webp"]}
+          quality={70}
           class="h-full w-full object-cover"
+          loading="lazy"
         />
       </div>
     </div>
@@ -130,12 +141,15 @@ const valores = [
   <!-- Conoce a tu anfitrión -->
   <section class="px-6 py-16 sm:py-20">
     <div class="mx-auto flex max-w-3xl flex-col items-center gap-6 rounded-2xl border border-foreground/10 bg-white p-8 text-center sm:flex-row sm:items-start sm:gap-8 sm:text-left">
-      <Image
+      <Picture
         src={founderAvatar}
         alt="Joaquín, fundador de Vallarta Mágico"
         width={112}
         height={112}
+        formats={["webp"]}
+        quality={70}
         class="h-28 w-28 shrink-0 rounded-full object-cover"
+        loading="lazy"
       />
       <div>
         <p class="text-sm font-semibold uppercase tracking-wide text-accent">Conoce a tu anfitrión</p>

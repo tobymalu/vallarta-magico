@@ -1,5 +1,5 @@
 ---
-import { Image, getImage } from "astro:assets";
+import { Picture, getImage } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
@@ -29,13 +29,18 @@ const seo = {
   <Header idioma="es" urlAlterna="/en/" />
 
   <section class="relative isolate overflow-hidden">
-    <Image
+    <Picture
       src={heroImage}
       alt="Las letras de Puerto Vallarta y el Caballito de Mar en el malecón"
       width={1920}
       height={800}
+      widths={[640, 1024, 1920]}
+      sizes="100vw"
+      formats={["webp"]}
+      quality={70}
       class="absolute inset-0 -z-10 h-full w-full object-cover"
-      priority
+      loading="eager"
+      fetchpriority="high"
     />
     <div class="absolute inset-0 -z-10 bg-gradient-to-t from-primary via-primary/80 to-primary/40" />
 

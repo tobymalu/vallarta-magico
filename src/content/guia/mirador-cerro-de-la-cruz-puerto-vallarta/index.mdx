@@ -37,7 +37,7 @@ seo:
   noindex: false
 ---
 
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import CalloutTour from "../../../components/CalloutTour.astro";
 import fotoEscaleras from "./escaleras-subida-mirador-cerro-de-la-cruz.png";
 import fotoTorre from "./torre-cruz-mirador-puerto-vallarta.png";
@@ -57,12 +57,15 @@ La ruta más directa y popular inicia desde el Malecón:
 3. La pendiente se irá inclinando hasta convertirse en una serie de escalinatas acondicionadas con descansos y pasamanos.
 
 <figure class="not-prose my-8">
-  <Image
+  <Picture
     src={fotoEscaleras}
     alt="Escalinatas de acceso hacia la cima del Mirador del Cerro de la Cruz en el centro de Puerto Vallarta"
     width={768}
     height={1024}
     class="mx-auto h-auto w-full max-w-md rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
   <figcaption class="mt-2 text-center text-sm text-muted">
     El tramo final son escalinatas con pasamanos — el antiguo funicular ya no opera.
@@ -83,12 +86,15 @@ La ruta más directa y popular inicia desde el Malecón:
 El atardecer es el momento cúspide para visitar el mirador. El sol se oculta directamente sobre el Océano Pacífico, tiñendo el cielo de tonos naranjas y rosados.
 
 <figure class="not-prose my-8">
-  <Image
+  <Picture
     src={fotoTorre}
     alt="Estructura principal y cruz en la cima del Cerro de la Cruz, con la plataforma de observación al fondo"
     width={1024}
     height={683}
     class="mx-auto h-auto w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
 </figure>
 

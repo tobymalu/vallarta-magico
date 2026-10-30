@@ -38,7 +38,7 @@ seo:
   noindex: false
 ---
 
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import CalloutTour from "../../../components/CalloutTour.astro";
 import fotoLancha from "./lancha-rapida-apex-los-veranos-canopy.jpg";
 import fotoRio from "./rio-los-veranos.jpg";
@@ -55,12 +55,15 @@ Si buscas adrenalina combinada con paisajes de montaña y playa, este recorrido 
 3. **Pase de acompañante.** Si alguien en tu grupo no desea volar por miedo a las alturas, puede adquirir el paseo por mar y disfrutar del restaurante a la orilla del río, las albercas naturales, los kayaks y el santuario exótico.
 
 <figure class="not-prose my-8">
-  <Image
+  <Picture
     src={fotoLancha}
     alt="Traslado marítimo en lancha rápida hacia el parque de aventuras Los Veranos"
     width={1200}
     height={800}
     class="mx-auto h-auto w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
   <figcaption class="mt-2 text-center text-sm text-muted">
     El cruce en lancha rápida APEX es parte de la experiencia, no solo transporte.
@@ -89,19 +92,25 @@ Muchos turistas se sorprenden al ver la tarifa de taquilla en dólares. En **Val
 - ✅ Degustación de tequila artesanal mexicana.
 
 <div class="not-prose my-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-  <Image
+  <Picture
     src={fotoRio}
     alt="Pareja disfrutando del tobogán natural del río en Los Veranos"
     width={800}
     height={600}
     class="h-56 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
-  <Image
+  <Picture
     src={fotoSantuario}
     alt="Área de relajación junto al río y santuario de fauna exótica en Los Veranos"
     width={800}
     height={600}
     class="h-56 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
 </div>
 

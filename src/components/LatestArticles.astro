@@ -6,7 +6,7 @@
 // /guia. Mismo criterio de "jalar de la colección" que FeaturedGrid.astro
 // (no hardcodear slugs a mano, así nunca queda desactualizado).
 import { getCollection } from "astro:content";
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import { CATEGORIA_INFO, CATEGORIA_INFO_EN } from "../lib/guia";
 
 export interface Props {
@@ -71,12 +71,17 @@ const slugDe = (id: string) => id.replace(/-en$/, "");
             >
               {a.data.imagen_portada && (
                 <div class="aspect-16/9 overflow-hidden">
-                  <Image
+                  <Picture
                     src={a.data.imagen_portada}
                     alt={a.data.titulo}
                     width={640}
                     height={360}
+                    widths={[384, 480, 640]}
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    formats={["webp"]}
+                    quality={70}
                     class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                    loading="lazy"
                   />
                 </div>
               )}

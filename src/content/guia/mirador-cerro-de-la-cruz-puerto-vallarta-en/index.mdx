@@ -35,7 +35,7 @@ seo:
   noindex: false
 ---
 
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import CalloutTour from "../../../components/CalloutTour.astro";
 import fotoEscaleras from "./escaleras-subida-mirador-cerro-de-la-cruz.png";
 import fotoTorre from "./torre-cruz-mirador-puerto-vallarta.png";
@@ -55,12 +55,15 @@ The most direct and popular route starts from the Malecón:
 3. The slope gradually turns into a series of paved staircases with landings and handrails.
 
 <figure class="not-prose my-8">
-  <Image
+  <Picture
     src={fotoEscaleras}
     alt="Staircase leading up to the top of the Cerro de la Cruz Viewpoint in downtown Puerto Vallarta"
     width={768}
     height={1024}
     class="mx-auto h-auto w-full max-w-md rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
   <figcaption class="mt-2 text-center text-sm text-muted">
     The final stretch is a staircase with handrails — the old funicular no longer operates.
@@ -81,12 +84,15 @@ The most direct and popular route starts from the Malecón:
 Sunset is the prime time to visit the viewpoint. The sun sets directly over the Pacific Ocean, painting the sky in shades of orange and pink.
 
 <figure class="not-prose my-8">
-  <Image
+  <Picture
     src={fotoTorre}
     alt="Main structure and cross at the top of Cerro de la Cruz, with the observation deck in the background"
     width={1024}
     height={683}
     class="mx-auto h-auto w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
 </figure>
 

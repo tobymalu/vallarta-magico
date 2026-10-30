@@ -40,7 +40,7 @@ seo:
   noindex: false
 ---
 
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import CalloutTour from "../../../components/CalloutTour.astro";
 import fotoCaminataSendero from "./caminata-senderismo-boca-de-tomatlan-a-colomitos.jpg";
 import fotoCaminataVista from "./caminata-senderismo-boca-de-tomatlan-a-colomitos-vista.jpg";
@@ -66,19 +66,25 @@ The trail connecting Boca de Tomatlán with Colomitos is one of the most popular
 > **Best for:** hiking lovers, younger travelers, and visitors in good physical shape.
 
 <div class="not-prose my-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-  <Image
+  <Picture
     src={fotoCaminataSendero}
     alt="Hikers walking the jungle trail toward Colomitos Beach"
     width={800}
     height={1000}
     class="h-72 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
-  <Image
+  <Picture
     src={fotoCaminataVista}
     alt="First glimpse of Colomitos Bay peeking through the trees along the trail"
     width={800}
     height={1000}
     class="h-72 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
 </div>
 <p class="not-prose -mt-4 mb-8 text-center text-sm text-muted">
@@ -100,19 +106,25 @@ If you'd rather save your energy, or plan to continue on to other southern beach
 > **Best for:** families with kids, older adults, or anyone bringing a cooler, umbrellas and beach gear.
 
 <div class="not-prose my-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-  <Image
+  <Picture
     src={fotoTaxiAcuatico}
     alt="A water taxi or panga dropping off passengers in the crystal-clear waters of Colomitos"
     width={800}
     height={600}
     class="h-56 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
-  <Image
+  <Picture
     src={fotoLanchas}
     alt="Boats anchored off Colomitos Beach, seen from the trail"
     width={800}
     height={600}
     class="h-56 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
 </div>
 <p class="not-prose -mt-4 mb-8 text-center text-sm text-muted">

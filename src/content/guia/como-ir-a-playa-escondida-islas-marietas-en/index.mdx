@@ -36,7 +36,7 @@ seo:
   noindex: false
 ---
 
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import CalloutTour from "../../../components/CalloutTour.astro";
 import fotoCueva from "./acceso-nadando-cueva-playa-escondida-marietas.jpg";
 import fotoNopaleraMar from "./playa-exterior-tour-tradicional-marietas.jpg";
@@ -60,12 +60,15 @@ To enter Playa del Amor, you need to follow these current rules:
 4. **Ecological protection.** Sunscreen (even biodegradable) is strictly forbidden before entering the water, and diving fins aren't allowed, to avoid damaging the coral.
 
 <figure class="not-prose my-8">
-  <Image
+  <Picture
     src={fotoCueva}
     alt="View from inside the rock tunnel leading into Hidden Beach, with a swimmer peeking through the entrance"
     width={1024}
     height={683}
     class="mx-auto h-auto w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
   <figcaption class="mt-2 text-center text-sm text-muted">
     This is what the entry tunnel looks like from inside Hidden Beach — the ~80 meters are swum with a life jacket and helmet.
@@ -85,19 +88,25 @@ It's very common to confuse the two itineraries. Here are the key differences:
 | Average price | From $1,400 MXN | $2,500 – $3,500+ MXN |
 
 <div class="not-prose my-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-  <Image
+  <Picture
     src={fotoNopaleraMar}
     alt="Visitors swimming in the turquoise waters of Nopalera Beach on the traditional Marietas Islands tour"
     width={800}
     height={600}
     class="h-56 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
-  <Image
+  <Picture
     src={fotoNopaleraCueva}
     alt="Rock arch framing the view of Nopalera Beach in Marietas Islands"
     width={800}
     height={600}
     class="h-56 w-full rounded-2xl object-cover shadow-md"
+    formats={["webp"]}
+    quality={70}
+    loading="lazy"
   />
 </div>
 <p class="not-prose -mt-4 mb-8 text-center text-sm text-muted">Nopalera Beach: the outer beach on the traditional tour, with no age restriction or capacity limit.</p>

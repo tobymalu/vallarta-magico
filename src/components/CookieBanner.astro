@@ -78,19 +78,42 @@ const t =
   // al fondo con el bottom-0 normal.
   const stickyBookBar = document.getElementById("sticky-book-bar");
 
-  function ajustarPosicion() {
+  // Evita "reflow forzado" (PageSpeed): la versión anterior leía
+  // stickyBookBar.offsetParent/offsetHeight justo al mostrar/ocultar el
+  // banner o al hacer resize, obligando al navegador a recalcular layout
+  // de forma síncrona en ese instante. Ahora:
+  // - La visibilidad de StickyBookBar (su clase es "lg:hidden") se
+  //   deriva de matchMedia, no de offsetParent — no depende de layout.
+  // - Su alto se cachea vía ResizeObserver, cuyo callback ya corre
+  //   después de que el navegador resolvió el layout por su cuenta (no
+  //   es una lectura que disparemos nosotros a destiempo). Dentro del
+  //   callback usamos getBoundingClientRect() (border-box, incluye
+  //   padding/borde) en vez de entries[0].contentRect (solo content-box,
+  //   sin padding) — StickyBookBar tiene padding+borde, así que
+  //   contentRect lo dejaba corto y el banner quedaba encimado.
+  const mqDesktop = window.matchMedia("(min-width: 1024px)"); // Tailwind "lg"
+  let stickyHeight = 0;
+
+  function aplicarPosicion() {
     if (!banner) return;
-    const stickyVisible = !!stickyBookBar && stickyBookBar.offsetParent !== null;
-    banner.style.bottom = stickyVisible ? `${stickyBookBar.offsetHeight}px` : "";
+    const stickyVisible = !!stickyBookBar && !mqDesktop.matches;
+    banner.style.bottom = stickyVisible ? `${stickyHeight}px` : "";
+  }
+
+  if (stickyBookBar) {
+    new ResizeObserver((entries) => {
+      stickyHeight = entries[0].target.getBoundingClientRect().height;
+      aplicarPosicion();
+    }).observe(stickyBookBar);
   }
 
   // El banner arranca oculto (atributo "hidden" en el markup) para no
   // parpadear en visitas de retorno que ya decidieron algo — solo lo
   // mostramos si todavía no hay ninguna decisión guardada.
   if (banner && localStorage.getItem(CONSENT_KEY) === null) {
-    ajustarPosicion();
+    aplicarPosicion();
     banner.hidden = false;
-    window.addEventListener("resize", ajustarPosicion);
+    mqDesktop.addEventListener("change", aplicarPosicion);
   }
 
   function actualizarConsentimiento(estado: "granted" | "denied") {
