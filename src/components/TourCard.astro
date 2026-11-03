@@ -26,6 +26,7 @@ const t =
         verDetalles: "View details →",
         adultos: "Adults: ",
         desde: "From ",
+        porHora: "/hour",
         garantia: "✅ Free cancellation up to 24h before",
       }
     : {
@@ -34,6 +35,7 @@ const t =
         verDetalles: "Ver detalles →",
         adultos: "Adultos: ",
         desde: "Desde ",
+        porHora: "/hora",
         garantia: "✅ Cancelación gratuita hasta 24h antes",
       };
 
@@ -63,6 +65,7 @@ const convertirMxn = (valor: number) =>
   nivelMostrado.moneda === "USD" ? valor * TIPO_CAMBIO_USD_MXN : valor;
 const precioMostrado = convertirMxn(nivelMostrado.precio);
 const precioRegularMostrado = nivelMostrado.precio_regular ? convertirMxn(nivelMostrado.precio_regular) : undefined;
+const precioPorHoraMostrado = nivelMostrado.precio_por_hora ? convertirMxn(nivelMostrado.precio_por_hora) : undefined;
 const descuentoPct = precioRegularMostrado
   ? Math.round((1 - precioMostrado / precioRegularMostrado) * 100)
   : undefined;
@@ -126,6 +129,13 @@ const enTemporada = estaEnTemporada(tour.data.temporada);
         {enTemporada || !tour.data.temporada ? t.verTour : t.verDetalles}
       </span>
     </div>
+    {
+      precioPorHoraMostrado && (
+        <p class="text-xs font-medium text-accent">
+          ${precioPorHoraMostrado.toLocaleString(locale)} MXN{t.porHora}
+        </p>
+      )
+    }
     {
       (enTemporada || !tour.data.temporada) && (
         // Texto plano, sin <a>: toda la tarjeta ya es un enlace y el HTML

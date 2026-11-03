@@ -4,6 +4,7 @@ export interface Props {
     etiqueta: string;
     precio: number;
     precio_regular?: number;
+    precio_por_hora?: number;
     moneda: "MXN" | "USD";
     nota?: string;
     tipo: "estandar" | "addon";
@@ -29,6 +30,7 @@ const t = esEn
       titulo: "Prices",
       subtitulo: "No surprises: this is exactly what you pay.",
       paseAlternativo: "Alternate pass",
+      porHora: "/hour",
       promo: "🔥 Promo -",
       garantiaPrefix: "✅ Risk-free booking: ",
       garantiaLink: "free cancellation up to 24 hours before",
@@ -37,6 +39,7 @@ const t = esEn
       titulo: "Precios",
       subtitulo: "Sin sorpresas: esto es exactamente lo que pagas.",
       paseAlternativo: "Pase alternativo",
+      porHora: "/hora",
       promo: "🔥 Promo -",
       garantiaPrefix: "✅ Reserva sin riesgo: ",
       garantiaLink: "cancelación gratuita hasta 24 horas antes",
@@ -80,6 +83,12 @@ const t = esEn
               ${nivel.precio.toLocaleString(locale)}
               <span class="text-base font-sans text-muted"> {nivel.moneda}</span>
             </p>
+            {nivel.precio_por_hora && (
+              <p class="mt-1 text-sm font-medium text-accent">
+                ${nivel.precio_por_hora.toLocaleString(locale)} {nivel.moneda}
+                {t.porHora}
+              </p>
+            )}
             {nivel.nota && <p class="mt-2 text-xs text-muted">{nivel.nota}</p>}
           </div>
         ))

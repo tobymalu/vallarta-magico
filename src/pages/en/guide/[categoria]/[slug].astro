@@ -62,6 +62,26 @@ const jsonLdBreadcrumb = {
     item: new URL(b.url, SITE.url).toString(),
   })),
 };
+
+// BlogPosting — ver mismo comentario en la versión en español de esta
+// página (src/pages/guia/[categoria]/[slug].astro).
+const pageUrl = new URL(breadcrumbs[breadcrumbs.length - 1].url, SITE.url).toString();
+const jsonLdBlogPosting = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: a.h1,
+  description: a.seo.meta_description,
+  image: seo.og_image ? [seo.og_image] : undefined,
+  datePublished: a.fecha_actualizacion.toISOString(),
+  dateModified: a.fecha_actualizacion.toISOString(),
+  author: { "@type": "Organization", name: "Vallarta Mágico", url: SITE.url },
+  publisher: {
+    "@type": "Organization",
+    name: "Vallarta Mágico",
+    logo: { "@type": "ImageObject", url: new URL("/favicon-96x96.png", SITE.url).toString() },
+  },
+  mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
+};
 ---
 
 <ActivityLayout
@@ -99,4 +119,5 @@ const jsonLdBreadcrumb = {
   }
 
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} slot="despues-del-articulo" />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBlogPosting)} slot="despues-del-articulo" />
 </ActivityLayout>

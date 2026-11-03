@@ -52,6 +52,13 @@ const tours = defineCollection({
           // en la UI a partir de precio/precio_regular, nunca a mano,
           // para que no queden desincronizados si cambia uno de los dos.
           precio_regular: z.number().optional(),
+          // Tarifa por hora equivalente, para tours cotizados como
+          // paquete de horas (ej. renta de lancha privada: $8,400 por
+          // 4 horas = $2,100/hora) — se muestra como dato adicional bajo
+          // el precio total en PriceTable, no reemplaza a "precio" (que
+          // sigue siendo el monto real que se cobra y el que usan
+          // JSON-LD/CTA/TourCard).
+          precio_por_hora: z.number().optional(),
           moneda: z.enum(["MXN", "USD"]).default("MXN"),
           // Texto corto opcional bajo el precio, para boletos cuyo alcance
           // no es obvio solo con la etiqueta (ej. qué incluye un "Pase de
