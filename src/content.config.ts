@@ -59,6 +59,13 @@ const tours = defineCollection({
           // sigue siendo el monto real que se cobra y el que usan
           // JSON-LD/CTA/TourCard).
           precio_por_hora: z.number().optional(),
+          // Foto opcional del vehículo/nivel exacto que describe este
+          // precio (ej. el ATV sencillo para "ATV Sencilla (1 persona)")
+          // — hace la tabla de precios más visual cuando el tour vende
+          // variantes claramente distintas entre sí (tipos de vehículo,
+          // capacidades). Opcional: la mayoría de los tours (niveles por
+          // edad: adultos/menores) no la necesitan.
+          foto: image().optional(),
           moneda: z.enum(["MXN", "USD"]).default("MXN"),
           // Texto corto opcional bajo el precio, para boletos cuyo alcance
           // no es obvio solo con la etiqueta (ej. qué incluye un "Pase de
@@ -173,6 +180,15 @@ const tours = defineCollection({
       // Orden manual entre los destacados (menor = primero). Opcional:
       // si no se define, se puede ordenar por fecha o alfabéticamente.
       orden_destacado: z.number().optional(),
+
+      // Slugs simples (sin reference(), mismo criterio que en "guia") de
+      // tours a mostrar en "Otros tours que te pueden interesar". Vacío
+      // por defecto: cuando no se define, [slug].astro cae al fallback
+      // automático de siempre (los primeros 3 tours que no sean este).
+      // Se define solo cuando interesa curar a mano qué tours cross-sell
+      // tienen más sentido (ej. un tour nuevo o nicho, donde el fallback
+      // automático no necesariamente elige los más relevantes).
+      tours_relacionados: z.array(z.string()).default([]),
 
       // Reseña real destacada para ESTE tour específicamente (ej. la
       // reseña de Alejandra sobre las ballenas, en el tour de ballenas).

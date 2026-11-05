@@ -80,8 +80,15 @@ const ctaWhatsapp = whatsappUrl(
 
 const garantiaHref = enTemporada ? "/en/cancellation-policy" : undefined;
 
-// Tours relacionados: el resto de las entradas en inglés.
-const relacionados = todos.filter((otro) => otro.id !== tour.id).slice(0, 3);
+// Tours relacionados: ver mismo comentario en la versión en español.
+// Los slugs en "tours_relacionados" son siempre slugs base (sin "-en"),
+// así que aquí se les agrega el sufijo para buscarlos en "todos".
+const relacionados =
+  t.tours_relacionados.length > 0
+    ? t.tours_relacionados
+        .map((baseSlug) => todos.find((otro) => otro.id === `${baseSlug}-en`))
+        .filter((otro) => otro !== undefined)
+    : todos.filter((otro) => otro.id !== tour.id).slice(0, 3);
 
 const breadcrumbs = [
   { name: "Home", url: `${SITE.url}/en/` },

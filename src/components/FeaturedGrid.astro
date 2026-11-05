@@ -33,11 +33,11 @@ const destacados = todosLosTours
   .filter((tour) => tour.data.destacado)
   .sort((a, b) => (a.data.orden_destacado ?? 999) - (b.data.orden_destacado ?? 999));
 
-// Si no hay 9 destacados todavía, rellenamos con el resto de tours para
+// Si no hay 10 destacados todavía, rellenamos con el resto de tours para
 // que el grid nunca se vea incompleto mientras cargamos contenido real.
 const relleno = todosLosTours.filter((tour) => !tour.data.destacado);
 
-const tours: CollectionEntry<"tours">[] = [...destacados, ...relleno].slice(0, 9);
+const tours: CollectionEntry<"tours">[] = [...destacados, ...relleno].slice(0, 10);
 ---
 
 <section class="px-6 py-16 sm:py-20">

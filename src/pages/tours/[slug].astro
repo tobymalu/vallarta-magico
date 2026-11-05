@@ -100,9 +100,16 @@ const ctaWhatsapp = whatsappUrl(
 // no una reserva con política de cancelación aplicable todavía).
 const garantiaHref = enTemporada ? "/politicas-de-cancelacion" : undefined;
 
-// Tours relacionados: por ahora "todos los demás" — cuando haya más
-// volumen conviene filtrar por ubicación/cluster en vez de "todos menos yo".
-const relacionados = todos.filter((otro) => otro.id !== tour.id).slice(0, 3);
+// Tours relacionados: si el tour define "tours_relacionados" a mano, se
+// usan esos (en el orden dado); si no, fallback automático a "todos los
+// demás" — cuando haya más volumen conviene filtrar por ubicación/cluster
+// en vez de "todos menos yo".
+const relacionados =
+  t.tours_relacionados.length > 0
+    ? t.tours_relacionados
+        .map((slug) => todos.find((otro) => otro.id === slug))
+        .filter((otro) => otro !== undefined)
+    : todos.filter((otro) => otro.id !== tour.id).slice(0, 3);
 
 const breadcrumbs = [
   { name: "Inicio", url: `${SITE.url}/` },
