@@ -4,6 +4,7 @@ import { getImage } from "astro:assets";
 import ActivityLayout from "../../../layouts/ActivityLayout.astro";
 import TourCard from "../../../components/TourCard.astro";
 import Gallery from "../../../components/Gallery.astro";
+import FaqList from "../../../components/FaqList.astro";
 import { CATEGORIA_INFO } from "../../../lib/guia";
 import { SITE } from "../../../lib/site";
 
@@ -80,6 +81,19 @@ const jsonLdBlogPosting = {
   },
   mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
 };
+
+const jsonLdFaq =
+  a.faq.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: a.faq.map((f) => ({
+          "@type": "Question",
+          name: f.pregunta,
+          acceptedAnswer: { "@type": "Answer", text: f.respuesta },
+        })),
+      }
+    : null;
 ---
 
 <ActivityLayout
@@ -93,6 +107,14 @@ const jsonLdBlogPosting = {
   urlAlterna={`/en/guide/${a.categoria}/${entry.id}/`}
 >
   <Content />
+
+  {
+    a.faq.length > 0 && (
+      <Fragment slot="despues-del-articulo">
+        <FaqList items={a.faq} />
+      </Fragment>
+    )
+  }
 
   <Fragment slot="despues-del-articulo">
     <Gallery fotos={a.galeria} />
@@ -117,4 +139,5 @@ const jsonLdBlogPosting = {
 
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} slot="despues-del-articulo" />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdBlogPosting)} slot="despues-del-articulo" />
+  {jsonLdFaq && <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} slot="despues-del-articulo" />}
 </ActivityLayout>

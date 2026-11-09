@@ -262,6 +262,19 @@ const guia = defineCollection({
       // CalloutTour.astro, que es una recomendación puntual insertada a
       // mano dentro del cuerpo del MDX.
       tours_relacionados: z.array(z.string()).default([]),
+      // Bloque de preguntas frecuentes, renderizado al final del artículo
+      // con FaqList.astro (mismo componente/forma que ya usa "tours") y
+      // expuesto como JSON-LD FAQPage para elegibilidad a rich snippets
+      // en Google — mejora el CTR en resultados de búsqueda. Opcional:
+      // vacío por defecto, solo se define en los artículos donde aporta.
+      faq: z
+        .array(
+          z.object({
+            pregunta: z.string(),
+            respuesta: z.string(),
+          }),
+        )
+        .default([]),
       seo: seoSchema,
     }),
 });
